@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
+import $ from 'jquery';
 import NavBar from './components/navbar';
 import Header from './components/header';
 import Section from "./components/section";
@@ -83,18 +84,27 @@ export default class App extends Component {
         console.log(user.getBasicProfile().getName());
 
         let userLinks = ["public1", "public2", "sign_out"];
-        /* ajax request to get user's groups & default function */
-        const userGroups = ["user", "admin", "home_finance"];
 
-        userLinks = userLinks.concat(userGroups);
-        const navLinks = this.state.navLinks.map(l => {
-            l.enabled = userLinks.includes(l.id);
-            l.user = user;
-            return l;
+        $.ajax({
+            type: 'POST',
+            url: '/api/session',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            success: function (user) {
+                setLinks(user.groups)
+                /* set default function on page */
+            },
+            data: {token: user.getAuthResponse().id_token}
         });
-        this.setState({navLinks});
 
-        /* set default function on page */
+        const setLinks = (function (groups) {
+            userLinks = userLinks.concat(groups);
+            const navLinks = this.state.navLinks.map(l => {
+                l.enabled = userLinks.includes(l.id);
+                l.user = user;
+                return l;
+            });
+            this.setState({navLinks});
+        }).bind(this);
     }
 
     render() {
