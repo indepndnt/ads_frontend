@@ -40,18 +40,25 @@ class User {
         return this.user_data.email;
     }
 
-    _logout() {
+    _logout(e) {
         $.ajax({
             type: 'DELETE',
             url: '/api/session',
             headers: {'X-Requested-With': 'XMLHttpRequest'},
+            error: function (e) {
+                console.log(e);
+            }
         });
+        e.preventDefault();
+
         if (this.id_provider === 'google') {
             this.google_user_instance.disconnect();
         } else if (this.id_provider === 'intuit') {
             console.log('log out from intuit how?')
         }
         this.id_provider = '';
+        // TODO: change this to somehow call setVisitor() again?
+        window.location = '/'
     }
     logout = this._logout.bind(this);
 
