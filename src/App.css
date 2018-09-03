@@ -52,13 +52,20 @@ h6 {
   letter-spacing: 0.1rem;
 }
 
-#signin2 {
+.nav-signin {
   padding-left: 8px;
   padding-right: 8px;
 }
 
-#signin2 > div {
-  border-radius: 3rem;
+.nav-signin > div, .nav-signin > img, #signin2 > div > div > div {
+  border-radius: 2rem;
+  height: 26px;
+}
+
+.nav-signin > img:hover {
+  background-color: #365ebe;
+  box-shadow: 0 0 3px 3px rgba(65, 114, 226, .3);
+  cursor: pointer;
 }
 
 header.masthead {

@@ -8,6 +8,80 @@ import MailingList from "./components/mailingList"
 import Footer from './components/footer';
 /* global gapi */
 
+class User {
+    id_provider;
+    google_user_instance;
+    intuit_user_instance;
+    user_data;
+
+    get user() {
+        if (this.id_provider === 'google') {
+            return this.google_user_instance;
+        } else if (this.id_provider === 'intuit') {
+            return this.intuit_user_instance;
+        } else {
+            console.log("Error: no identity provider set to get user");
+        }
+    }
+
+    get groups() {
+        return this.user_data.groups;
+    }
+
+    get firstName() {
+        return this.user_data.first_name;
+    }
+
+    get lastName() {
+        return this.user_data.last_name;
+    }
+
+    get email() {
+        return this.user_data.email;
+    }
+
+    _logout() {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/session',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+        });
+        if (this.id_provider === 'google') {
+            this.google_user_instance.disconnect();
+        } else if (this.id_provider === 'intuit') {
+            console.log('log out from intuit how?')
+        }
+        this.id_provider = '';
+    }
+    logout = this._logout.bind(this);
+
+    _intuitSignIn() {
+        this.id_provider = 'intuit';
+        $.ajax({
+            type: 'POST',
+            url: '/api/intuit-sso',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            success: function (url) {
+                window.location = url;
+            }
+        });
+    }
+    intuitSignIn = this._intuitSignIn.bind(this);
+
+    _googleSignIn() {
+        this.id_provider = 'google';
+        const auth2 = gapi.auth2.getAuthInstance();
+        this.google_user_instance = auth2.currentUser.get();
+    }
+    googleSignIn = this._googleSignIn.bind(this);
+
+    _setUserData(data) {
+        this.user_data = data;
+    }
+    setUserData = this._setUserData.bind(this)
+}
+
+
 export default class App extends Component {
     state = {
         navLinks: [
@@ -23,6 +97,7 @@ export default class App extends Component {
             {id: "sign_out", text: "Sign Out", link: "signout", enabled: false},           /* Sign out */
         ],
     };
+
     componentWillMount() {
         // Import Google's authentication API
         const script = document.createElement("script");
@@ -48,11 +123,11 @@ export default class App extends Component {
     googleInit(auth2) {
         // Google API has successfully instantiated here
         const signedIn = auth2.isSignedIn.get();
-        if (signedIn) {this.setUser()} else {this.setVisitor()}
+        if (signedIn) {this.setGoogleUser()} else {this.intuitInit()}
     }
     renderGoogleButton() {
-        // Render the Google Sign-In button and bind it to the setUser method
-        const boundSetUser = this.setUser.bind(this);
+        // Render the Google Sign-In button and bind it to the setGoogleUser method
+        const boundSetUser = this.setGoogleUser.bind(this);
         gapi.signin2.render('signin2', {
             'scope': 'profile email',
             'width': '100px',
@@ -63,11 +138,63 @@ export default class App extends Component {
         });
     }
 
-    setVisitor() {
+    intuitInit() {
+        const user = new User();
+        const setLinks = this.setupUser.bind(this);
+        const visit = this.setVisitor.bind(this);
+        $.ajax({
+            type: 'GET',
+            url: '/api/session',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            success: function (userData) {
+                user.id_provider = 'intuit';
+                user.setUserData(userData);
+                setLinks(user);
+            },
+            error: function () {
+                visit(user);
+            },
+        });
+    }
+
+    setGoogleUser() {
+        const user = new User();
+        user.googleSignIn();
+
+        const setLinks = this.setupUser.bind(this);
+        $.ajax({
+            type: 'POST',
+            url: '/api/session',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            success: function (userData) {
+                user.setUserData(userData);
+                setLinks(user);
+            },
+            data: {token: user.user.getAuthResponse().id_token}
+        });
+    }
+
+    setupUser(user) {
+        // Organize the page according to the user who has logged in
+        let userLinks = ["public1", "public2", "sign_out"];
+        userLinks = userLinks.concat(user.groups);
+        const navLinks = this.state.navLinks.map(l => {
+            l.enabled = userLinks.includes(l.id);
+            l.user = user;
+            return l;
+        });
+        this.setState({navLinks});
+        /* set default function on page */
+        console.log(user.id_provider, user.email, user.firstName, user.lastName);
+        console.log(user.groups);
+    }
+
+    setVisitor(user) {
         // Organize the page according to when no one is logged on.
         const publicLinks = ["public1", "public2", "public3", "visitor"];
         const navLinks = this.state.navLinks.map(l => {
             l.enabled = publicLinks.includes(l.id);
+            l.user = user;
             return l;
         });
         this.setState({navLinks});
@@ -75,36 +202,6 @@ export default class App extends Component {
         this.renderGoogleButton();
         this.addHeader();
         this.addSections();
-    }
-
-    setUser() {
-        // Organize the page according to the user who has logged in
-        const auth2 = gapi.auth2.getAuthInstance();
-        const user = auth2.currentUser.get();
-        console.log(user.getBasicProfile().getName());
-
-        let userLinks = ["public1", "public2", "sign_out"];
-
-        $.ajax({
-            type: 'POST',
-            url: '/api/session',
-            headers: {'X-Requested-With': 'XMLHttpRequest'},
-            success: function (user) {
-                setLinks(user.groups)
-                /* set default function on page */
-            },
-            data: {token: user.getAuthResponse().id_token}
-        });
-
-        const setLinks = (function (groups) {
-            userLinks = userLinks.concat(groups);
-            const navLinks = this.state.navLinks.map(l => {
-                l.enabled = userLinks.includes(l.id);
-                l.user = user;
-                return l;
-            });
-            this.setState({navLinks});
-        }).bind(this);
     }
 
     render() {

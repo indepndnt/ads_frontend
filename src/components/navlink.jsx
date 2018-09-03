@@ -1,17 +1,25 @@
 import React, {Component} from 'react';
+import intuit_button from './img/intuit-sign-in.png'
 
 export default class Link extends Component {
     render() {
         if (this.props.link === 'signin') {
             return (
-                <li className="nav-item">
-                    <div className="" id="signin2"/>
-                </li>
+                <React.Fragment>
+                    <li className="nav-item">
+                        <div className="nav-signin" id="signin2"/>
+                    </li>
+                    <li className="nav-item">
+                        <div className="nav-signin" id="signin3" onClick={this.props.user.intuitSignIn}>
+                            <img src={intuit_button} alt="Sign in with Intuit"/>
+                        </div>
+                    </li>
+                </React.Fragment>
             )
         } else if (this.props.link === 'signout') {
             return (
                 <li className="nav-item">
-                    <a className="nav-link" onClick={this.props.user.disconnect} href="">{this.props.text}</a>
+                    <a className="nav-link" onClick={this.props.user.logout} href="">{this.props.text}</a>
                 </li>
             )
         } else {
