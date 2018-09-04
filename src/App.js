@@ -43,9 +43,13 @@ class User {
 
     constructor(context) {
         this.context = context;
+        this.logout = this.logout.bind(this);
+        this.intuitSignIn = this.intuitSignIn.bind(this);
+        this.googleSignIn = this.googleSignIn.bind(this);
+        this.setUserData = this.setUserData.bind(this);
     }
 
-    _logout(event) {
+    logout(event) {
         event.preventDefault();
         $.ajax({
             context: this,
@@ -78,9 +82,8 @@ class User {
         this.id_provider = '';
         return false;
     }
-    logout = this._logout.bind(this);
 
-    _intuitSignIn() {
+    intuitSignIn() {
         this.id_provider = 'intuit';
         $.ajax({
             type: 'POST',
@@ -91,19 +94,16 @@ class User {
             }
         });
     }
-    intuitSignIn = this._intuitSignIn.bind(this);
 
-    _googleSignIn() {
+    googleSignIn() {
         this.id_provider = 'google';
         const auth2 = gapi.auth2.getAuthInstance();
         this.google_user_instance = auth2.currentUser.get();
     }
-    googleSignIn = this._googleSignIn.bind(this);
 
-    _setUserData(data) {
+    setUserData(data) {
         this.user_data = data;
     }
-    setUserData = this._setUserData.bind(this)
 }
 
 
@@ -208,10 +208,14 @@ export default class App extends Component {
             l.user = user;
             return l;
         });
-        this.setState({navLinks});
+        this.setState({
+            navLinks: navLinks,
+            sections: "",
+        });
         /* set default function on page */
         console.log(user.id_provider, user.email, user.firstName, user.lastName);
         console.log(user.groups);
+        this.setHeader('welcome');
     }
 
     setVisitor(user) {
@@ -225,8 +229,8 @@ export default class App extends Component {
         this.setState({navLinks});
 
         this.renderGoogleButton();
-        this.addHeader();
-        this.addSections();
+        this.setHeader("visitor");
+        this.setSections();
     }
 
     render() {
@@ -240,12 +244,42 @@ export default class App extends Component {
         )
     }
 
-    addHeader() {
-        const header = <Header />;
-        this.setState({header});
+    headerValues(index) {
+        switch (index) {
+            case "welcome":
+                return {
+                    heading: <h2 className="masthead-heading mb-0">Thank you for joining us!</h2>,
+                    tagLine: <p>Your email address has been added to the mailing list, and you will be notified when
+                        the app is launched! If you have not already done so, please visit the Kickstarter page by
+                        clicking the button below and make a pledge!</p>,
+                    button: <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-xl rounded-pill mt-5">
+                        Count me in!</a>,
+                };
+            default:
+                return {
+                    heading: <h2 className="masthead-heading mb-0">Live shipment tracking right in your QuickBooks
+                        Online Invoice</h2>,
+                    tagLine: <p>Our goal is to make it easier for small business owners manage their sales and
+                        collections. Help us get started by backing the first Kickstarter to add shipment tracking
+                        to QuickBooks Online!</p>,
+                    button: <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-xl rounded-pill mt-5">Learn
+                        More</a>,
+                };
+        }
     }
 
-    addSections() {
+    setHeader(index) {
+        if (index === null) {
+            this.setState({header: ""})
+        } else {
+            const p = this.headerValues(index);
+            this.setState({
+                header: <Header heading={p.heading} tagLine={p.tagLine} button={p.button} />
+            })
+        }
+    }
+
+    setSections() {
         const sections = (
             <React.Fragment>
                 <Section key="1" image="01.jpg" swap="true" heading="Robotic Process Automation as a Service (RPAaaS)"
