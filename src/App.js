@@ -13,6 +13,7 @@ class User {
     google_user_instance;
     intuit_user_instance;
     user_data;
+    context;
 
     get user() {
         if (this.id_provider === 'google') {
@@ -40,16 +41,34 @@ class User {
         return this.user_data.email;
     }
 
-    _logout(e) {
+    constructor(context) {
+        this.context = context;
+    }
+
+    _logout(event) {
+        event.preventDefault();
         $.ajax({
+            context: this,
             type: 'DELETE',
             url: '/api/session',
             headers: {'X-Requested-With': 'XMLHttpRequest'},
-            error: function (e) {
-                console.log(e);
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('error - xhr:', jqXHR, 'textStatus:', textStatus, 'errorThrown:', errorThrown);
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/api/session',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    async: false
+                });
+                // noinspection JSPotentiallyInvalidUsageOfClassThis
+                this.context.setVisitor(this);
+            },
+            success: function (data, textStatus, jqXHR) {
+                console.log('success - data:', data, 'textStatus:', textStatus, 'jqXHR:', jqXHR);
+                // noinspection JSPotentiallyInvalidUsageOfClassThis
+                this.context.setVisitor(this);
             }
         });
-        e.preventDefault();
 
         if (this.id_provider === 'google') {
             this.google_user_instance.disconnect();
@@ -57,8 +76,7 @@ class User {
             console.log('log out from intuit how?')
         }
         this.id_provider = '';
-        // TODO: change this to somehow call setVisitor() again?
-        window.location = '/'
+        return false;
     }
     logout = this._logout.bind(this);
 
@@ -146,7 +164,7 @@ export default class App extends Component {
     }
 
     intuitInit() {
-        const user = new User();
+        const user = new User(this);
         const setLinks = this.setupUser.bind(this);
         const visit = this.setVisitor.bind(this);
         $.ajax({
@@ -165,7 +183,7 @@ export default class App extends Component {
     }
 
     setGoogleUser() {
-        const user = new User();
+        const user = new User(this);
         user.googleSignIn();
 
         const setLinks = this.setupUser.bind(this);
