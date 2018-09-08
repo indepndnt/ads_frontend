@@ -9,44 +9,37 @@ import Footer from './components/footer';
 /* global gapi */
 
 class User {
-    id_provider;
-    google_user_instance;
-    intuit_user_instance;
-    user_data;
-    context;
+    idProvider;
+    googleUserInstance;
 
-    get user() {
-        if (this.id_provider === 'google') {
-            return this.google_user_instance;
-        } else if (this.id_provider === 'intuit') {
-            return this.intuit_user_instance;
-        } else {
-            console.log("Error: no identity provider set to get user");
+    constructor(context) {
+        this.context = context;
+        this._userData = {first_name: '', last_name: '', email: '', groups: []};
+        this.logout = this.logout.bind(this);
+        this.intuitSignIn = this.intuitSignIn.bind(this);
+        this.googleSignIn = this.googleSignIn.bind(this);
+    }
+
+    set userData(data) {
+        for (const [key, value] of Object.entries(data)) {
+            this._userData[key] = value
         }
     }
 
     get groups() {
-        return this.user_data.groups;
+        return this._userData.groups;
     }
 
     get firstName() {
-        return this.user_data.first_name;
+        return this._userData.first_name;
     }
 
     get lastName() {
-        return this.user_data.last_name;
+        return this._userData.last_name;
     }
 
     get email() {
-        return this.user_data.email;
-    }
-
-    constructor(context) {
-        this.context = context;
-        this.logout = this.logout.bind(this);
-        this.intuitSignIn = this.intuitSignIn.bind(this);
-        this.googleSignIn = this.googleSignIn.bind(this);
-        this.setUserData = this.setUserData.bind(this);
+        return this._userData.email;
     }
 
     logout(event) {
@@ -64,27 +57,25 @@ class User {
                     headers: {'X-Requested-With': 'XMLHttpRequest'},
                     async: false
                 });
-                // noinspection JSPotentiallyInvalidUsageOfClassThis
-                this.context.setVisitor(this);
+                this.context.setupVisitor(this);
             },
             success: function (data, textStatus, jqXHR) {
                 console.log('success - data:', data, 'textStatus:', textStatus, 'jqXHR:', jqXHR);
-                // noinspection JSPotentiallyInvalidUsageOfClassThis
-                this.context.setVisitor(this);
+                this.context.setupVisitor(this);
             }
         });
 
-        if (this.id_provider === 'google') {
-            this.google_user_instance.disconnect();
-        } else if (this.id_provider === 'intuit') {
+        if (this.idProvider === 'google') {
+            this.googleUserInstance.disconnect();
+        } else if (this.idProvider === 'intuit') {
             console.log('log out from intuit how?')
         }
-        this.id_provider = '';
+        this.idProvider = '';
         return false;
     }
 
     intuitSignIn() {
-        this.id_provider = 'intuit';
+        this.idProvider = 'intuit';
         $.ajax({
             type: 'POST',
             url: '/api/intuit-sso',
@@ -96,14 +87,11 @@ class User {
     }
 
     googleSignIn() {
-        this.id_provider = 'google';
+        this.idProvider = 'google';
         const auth2 = gapi.auth2.getAuthInstance();
-        this.google_user_instance = auth2.currentUser.get();
+        this.googleUserInstance = auth2.currentUser.get();
     }
 
-    setUserData(data) {
-        this.user_data = data;
-    }
 }
 
 
@@ -123,6 +111,13 @@ export default class App extends Component {
         ],
     };
 
+    constructor() {
+        super();
+        this.setupVisitor = this.setupVisitor.bind(this);
+        this.setupUser = this.setupUser.bind(this);
+        this.checkForLoggedInUser = this.checkForLoggedInUser.bind(this);
+    }
+
     componentWillMount() {
         // Import Google's authentication API
         const script = document.createElement("script");
@@ -132,71 +127,61 @@ export default class App extends Component {
         script.src = "https://apis.google.com/js/platform.js";
         document.body.appendChild(script);
     }
+
     gapiLoadWhenReady(script) {
         // Load the auth2 instance
-        const boundGoogleInit = this.googleInit.bind(this);
+        const afterGoogleInit = this.checkForLoggedInUser;
         if (script.getAttribute('gapi_processed')) {
             gapi.load('auth2', function () {
                 gapi.auth2.init({
                     client_id: '444058961244-j1ceheocuu09gfllsr0omgle5963n32i.apps.googleusercontent.com',
                     // Scopes to request in addition to 'profile' and 'email'
                     //scope: 'additional_scope'
-                }).then(auth => boundGoogleInit(auth));
+                }).then(auth2 => afterGoogleInit(auth2));
             });
         } else { setTimeout(() => {this.gapiLoadWhenReady(script)}, 100) }
     }
-    googleInit(auth2) {
-        // Google API has successfully instantiated here
-        const signedIn = auth2.isSignedIn.get();
-        if (signedIn) {this.setGoogleUser()} else {this.intuitInit()}
-    }
-    renderGoogleButton() {
-        // Render the Google Sign-In button and bind it to the setGoogleUser method
-        const boundSetUser = this.setGoogleUser.bind(this);
-        gapi.signin2.render('signin2', {
-            'scope': 'profile email',
-            'width': '100px',
-            'height': '26px',
-            'theme': 'dark',
-            'onsuccess': () => {boundSetUser()},
-            // 'onfailure': () => {}
-        });
-    }
 
-    intuitInit() {
-        const user = new User(this);
-        const setLinks = this.setupUser.bind(this);
-        const visit = this.setVisitor.bind(this);
-        $.ajax({
-            type: 'GET',
-            url: '/api/session',
-            headers: {'X-Requested-With': 'XMLHttpRequest'},
-            success: function (userData) {
-                user.id_provider = 'intuit';
-                user.setUserData(userData);
-                setLinks(user);
-            },
-            error: function () {
-                visit(user);
-            },
-        });
-    }
-
-    setGoogleUser() {
-        const user = new User(this);
+    googleSignIn(user) {
+        const setupUser = this.setupUser;
         user.googleSignIn();
-
-        const setLinks = this.setupUser.bind(this);
         $.ajax({
+            context: this,
             type: 'POST',
             url: '/api/session',
             headers: {'X-Requested-With': 'XMLHttpRequest'},
+            data: {token: user.googleUserInstance.getAuthResponse().id_token},
             success: function (userData) {
-                user.setUserData(userData);
-                setLinks(user);
+                user.userData = userData;
+                setupUser(user);
             },
-            data: {token: user.user.getAuthResponse().id_token}
         });
+    }
+
+    checkForLoggedInUser(googleAuthInstance) {
+        // Google API has successfully instantiated here
+        const user = new User(this);
+        const setupUser = this.setupUser;
+        const setupVisitor = this.setupVisitor;
+
+        if (googleAuthInstance.isSignedIn.get()) {
+            this.googleSignIn(user);
+        } else {
+            $.ajax({
+                context: this,
+                type: 'GET',
+                url: '/api/session',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                success: function (userData) {
+                    user.idProvider = 'intuit';
+                    user.userData = userData;
+                    setupUser(user);
+                },
+                error: function () {
+                    setupVisitor(user);
+                },
+            });
+        }
     }
 
     setupUser(user) {
@@ -213,12 +198,10 @@ export default class App extends Component {
             sections: "",
         });
         /* set default function on page */
-        console.log(user.id_provider, user.email, user.firstName, user.lastName);
-        console.log(user.groups);
         this.setHeader('welcome');
     }
 
-    setVisitor(user) {
+    setupVisitor(user) {
         // Organize the page according to when no one is logged on.
         const publicLinks = ["public1", "public2", "public3", "visitor"];
         const navLinks = this.state.navLinks.map(l => {
@@ -228,7 +211,16 @@ export default class App extends Component {
         });
         this.setState({navLinks});
 
-        this.renderGoogleButton();
+        // Render the Google Sign-In button
+        const signIn = this.googleSignIn.bind(this);
+        gapi.signin2.render('signin2', {
+            'scope': 'profile email',
+            'width': '100px',
+            'height': '26px',
+            'theme': 'dark',
+            'onsuccess': () => {signIn(new User(this))},
+            // 'onfailure': () => {}
+        });
         this.setHeader("visitor");
         this.setSections();
     }
