@@ -7,6 +7,7 @@ import Visitor from "./components/home/visitor";
 import UserPage from "./components/home/user";
 import Service from "./components/service/service"
 import About from "./components/home/about"
+
 /* global gapi */
 
 class User {
@@ -87,37 +88,49 @@ class User {
         });
     }
 
-    googleSignIn() {
+    googleSignIn(setupUser) {
         this.idProvider = 'google';
         const auth2 = gapi.auth2.getAuthInstance();
         this.googleUserInstance = auth2.currentUser.get();
+        $.ajax({
+            context: this,
+            type: 'POST',
+            url: '/api/session',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            data: {token: this.googleUserInstance.getAuthResponse().id_token},
+            success: function (userData) {
+                // noinspection JSPotentiallyInvalidUsageOfClassThis
+                this.userData = userData;
+                setupUser(this);
+            },
+        });
     }
-
 }
-
 
 export default class App extends Component {
     state = {
         navLinks: [
-            {id: "public1", text: "Service", link: "service", enabled: false},             /* projects gallery */
+            {id: "public1", text: "Service", link: "service", enabled: false}, /* projects gallery */
             {id: "home_finance", text: "Finance", link: "/home/finances", enabled: false}, /* Service : Home finance */
-            {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false},   /* Service : Brainchild */
-            {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false},                 /* Service : qb */
-            {id: "public2", text: "Essays", link: "essays", enabled: false},               /* Essays */
-            {id: "public3", text: "About", link: "about", enabled: false},                 /* About / Contact */
-            {id: "admin", text: "Admin", link: "/admin", enabled: false},                  /* Admin */
-            {id: "user", text: "Account", link: "/account", enabled: false},               /* Account Profile */
-            {id: "visitor", text: "Sign In", link: "signin", enabled: false},              /* Sign in */
-            {id: "sign_out", text: "Sign Out", link: "signout", enabled: false},           /* Sign out */
+            {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false}, /* Service : Brainchild */
+            {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false}, /* Service : qb */
+            {id: "public2", text: "Essays", link: "essays", enabled: false}, /* Essays */
+            {id: "public3", text: "About", link: "about", enabled: false}, /* About / Contact */
+            {id: "admin", text: "Admin", link: "/admin", enabled: false}, /* Admin */
+            {id: "user", text: "Account", link: "/account", enabled: false}, /* Account Profile */
+            {id: "visitor", text: "Sign In", link: "signin", enabled: false}, /* Sign in */
+            {id: "sign_out", text: "Sign Out", link: "signout", enabled: false}, /* Sign out */
         ],
     };
 
     constructor() {
         super();
+        this.state.user = new User(this);
         this.setupVisitor = this.setupVisitor.bind(this);
         this.setupUser = this.setupUser.bind(this);
         this.checkForLoggedInUser = this.checkForLoggedInUser.bind(this);
         this.navigateTo = this.navigateTo.bind(this);
+        this.googleSignIn = this.googleSignIn.bind(this);
     }
 
     componentWillMount() {
@@ -141,33 +154,25 @@ export default class App extends Component {
                     //scope: 'additional_scope'
                 }).then(auth2 => afterGoogleInit(auth2));
             });
-        } else { setTimeout(() => {this.gapiLoadWhenReady(script)}, 100) }
+        } else {
+            setTimeout(() => {
+                this.gapiLoadWhenReady(script)
+            }, 100)
+        }
     }
 
-    googleSignIn(user) {
-        const setupUser = this.setupUser;
-        user.googleSignIn();
-        $.ajax({
-            context: this,
-            type: 'POST',
-            url: '/api/session',
-            headers: {'X-Requested-With': 'XMLHttpRequest'},
-            data: {token: user.googleUserInstance.getAuthResponse().id_token},
-            success: function (userData) {
-                user.userData = userData;
-                setupUser(user);
-            },
-        });
+    googleSignIn() {
+        this.state.user.googleSignIn(this.setupUser);
     }
 
     checkForLoggedInUser(googleAuthInstance) {
         // Google API has successfully instantiated here
-        const user = new User(this);
+        const user = this.state.user;
         const setupUser = this.setupUser;
         const setupVisitor = this.setupVisitor;
 
         if (googleAuthInstance.isSignedIn.get()) {
-            this.googleSignIn(user);
+            this.googleSignIn();
         } else {
             $.ajax({
                 context: this,
@@ -192,12 +197,12 @@ export default class App extends Component {
         userLinks = userLinks.concat(user.groups);
         const navLinks = this.state.navLinks.map(l => {
             l.enabled = userLinks.includes(l.id);
-            l.user = user;
             return l;
         });
         this.setState({
             navLinks: navLinks,
-            page: <UserPage />,
+            page: <UserPage/>,
+            user: user,
         });
         /* set default function on page */
     }
@@ -207,35 +212,46 @@ export default class App extends Component {
         const publicLinks = ["public1", "public2", "public3", "visitor"];
         const navLinks = this.state.navLinks.map(l => {
             l.enabled = publicLinks.includes(l.id);
-            l.user = user;
             return l;
         });
-        this.setState({navLinks});
+
+        this.setState({
+            navLinks: navLinks,
+            page: <Visitor/>,
+            user: user,
+        });
 
         // Render the Google Sign-In button
-        const signIn = this.googleSignIn.bind(this);
-        gapi.signin2.render('signin2', {
-            'scope': 'profile email',
-            'width': '100px',
-            'height': '26px',
-            'theme': 'dark',
-            'onsuccess': () => {signIn(new User(this))},
-            // 'onfailure': () => {}
-        });
-        this.setState({page: <Visitor />});
+        if ($('#googleSignIn')) {
+            gapi.signin2.render('googleSignIn', {
+                'scope': 'profile email',
+                'width': 100,
+                'height': 26,
+                'theme': 'dark',
+                'onsuccess': this.googleSignIn,
+                // 'onfailure': () => {}
+            });
+        }
     }
 
     navigateTo(event, link) {
         event.preventDefault();
         switch (link) {
+            case "home":
+                if (this.state.user.idProvider) {
+                    this.setupUser(this.state.user)
+                } else {
+                    this.setupVisitor(this.state.user)
+                }
+                break;
             case "service":
-                this.setState({page: <Service />});
+                this.setState({page: <Service/>});
                 break;
             case "essays":
                 window.location = '/essays';
                 break;
             case "about":
-                this.setState({page: <About />});
+                this.setState({page: <About/>});
                 break;
             default:
                 window.location = link;
@@ -246,7 +262,9 @@ export default class App extends Component {
     render() {
         return (
             <React.Fragment>
-                <NavBar links={this.state.navLinks.filter(l => l.enabled)} onLink={this.navigateTo} />
+                <NavBar links={this.state.navLinks.filter(l => l.enabled)}
+                        onLink={this.navigateTo}
+                        user={this.state.user}/>
                 {this.state.page}
                 <Footer/>
             </React.Fragment>

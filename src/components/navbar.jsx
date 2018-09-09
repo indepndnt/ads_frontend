@@ -8,7 +8,8 @@ export default class NavBar extends Component {
         return (
             <nav className="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
                 <div className="container">
-                    <a className="navbar-brand" href="/"><img src={logo} alt="Accounting Data Solutions"/></a>
+                    <a className="navbar-brand" href="" onClick={(event) => onLink(event, "home")}>
+                        <img src={logo} alt="Accounting Data Solutions"/></a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                             aria-label="Toggle navigation">
@@ -17,7 +18,7 @@ export default class NavBar extends Component {
                     <div className="collapse navbar-collapse" id="navbarResponsive">
                         <ul className="navbar-nav ml-auto">
                             { this.props.links.map(link => (
-                                <Link key={link.id} link={link.link} text={link.text} user={link.user}
+                                <Link key={link.id} link={link.link} text={link.text} user={this.props.user}
                                       onLink={onLink} />
                             ))}
                         </ul>

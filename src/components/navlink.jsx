@@ -7,7 +7,7 @@ export default class Link extends Component {
             return (
                 <React.Fragment>
                     <li className="nav-item">
-                        <div className="nav-signin" id="signin2"/>
+                        <div className="nav-signin" id="googleSignIn"/>
                     </li>
                     <li className="nav-item">
                         <div className="nav-signin" id="signin3" onClick={this.props.user.intuitSignIn}>
