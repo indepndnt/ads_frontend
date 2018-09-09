@@ -25,7 +25,8 @@ export default class Link extends Component {
         } else {
             return (
                 <li className="nav-item">
-                    <a className="nav-link" href={this.props.link}>{this.props.text}</a>
+                    <a className="nav-link" href="" onClick={(event) => this.props.onLink(event, this.props.link)}>
+                        {this.props.text}</a>
                 </li>
             );
         }

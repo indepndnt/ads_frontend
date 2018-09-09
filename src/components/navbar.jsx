@@ -4,6 +4,7 @@ import Link from './navlink'
 
 export default class NavBar extends Component {
     render () {
+        const onLink = this.props.onLink;
         return (
             <nav className="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
                 <div className="container">
@@ -16,7 +17,8 @@ export default class NavBar extends Component {
                     <div className="collapse navbar-collapse" id="navbarResponsive">
                         <ul className="navbar-nav ml-auto">
                             { this.props.links.map(link => (
-                                <Link key={link.id} link={link.link} text={link.text} user={link.user} />
+                                <Link key={link.id} link={link.link} text={link.text} user={link.user}
+                                      onLink={onLink} />
                             ))}
                         </ul>
                     </div>

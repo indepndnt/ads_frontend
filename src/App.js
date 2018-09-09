@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import './App.css';
-import $ from 'jquery';
-import NavBar from './components/navbar';
-import Header from './components/header';
-import Section from "./components/section";
-import MailingList from "./components/mailingList"
-import Footer from './components/footer';
+import "./App.css";
+import $ from "jquery";
+import NavBar from "./components/navbar";
+import Footer from "./components/footer";
+import Visitor from "./components/home/visitor";
+import UserPage from "./components/home/user";
+import Service from "./components/service/service"
 /* global gapi */
 
 class User {
@@ -98,7 +98,7 @@ class User {
 export default class App extends Component {
     state = {
         navLinks: [
-            {id: "public1", text: "Service", link: "/projects", enabled: false},           /* projects gallery */
+            {id: "public1", text: "Service", link: "service", enabled: false},             /* projects gallery */
             {id: "home_finance", text: "Finance", link: "/home/finances", enabled: false}, /* Service : Home finance */
             {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false},   /* Service : Brainchild */
             {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false},                 /* Service : qb */
@@ -116,6 +116,7 @@ export default class App extends Component {
         this.setupVisitor = this.setupVisitor.bind(this);
         this.setupUser = this.setupUser.bind(this);
         this.checkForLoggedInUser = this.checkForLoggedInUser.bind(this);
+        this.navigateTo = this.navigateTo.bind(this);
     }
 
     componentWillMount() {
@@ -195,10 +196,9 @@ export default class App extends Component {
         });
         this.setState({
             navLinks: navLinks,
-            sections: "",
+            page: <UserPage />,
         });
         /* set default function on page */
-        this.setHeader('welcome');
     }
 
     setupVisitor(user) {
@@ -221,69 +221,27 @@ export default class App extends Component {
             'onsuccess': () => {signIn(new User(this))},
             // 'onfailure': () => {}
         });
-        this.setHeader("visitor");
-        this.setSections();
+        this.setState({page: <Visitor />});
+    }
+
+    navigateTo(event, link) {
+        event.preventDefault();
+        switch (link) {
+            case "service":
+                this.setState({page: <Service />});
+                break;
+            default:
+                break;
+        }
     }
 
     render() {
         return (
             <React.Fragment>
-                <NavBar links={this.state.navLinks.filter(l => l.enabled)}/>
-                {this.state.header}
-                {this.state.sections}
+                <NavBar links={this.state.navLinks.filter(l => l.enabled)} onLink={this.navigateTo} />
+                {this.state.page}
                 <Footer/>
             </React.Fragment>
         )
-    }
-
-    headerValues(index) {
-        switch (index) {
-            case "welcome":
-                return {
-                    heading: <h2 className="masthead-heading mb-0">Thank you for joining us!</h2>,
-                    tagLine: <p>Your email address has been added to the mailing list, and you will be notified when
-                        the app is launched! If you have not already done so, please visit the Kickstarter page by
-                        clicking the button below and make a pledge!</p>,
-                    button: <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-xl rounded-pill mt-5">
-                        Count me in!</a>,
-                };
-            default:
-                return {
-                    heading: <h2 className="masthead-heading mb-0">Live shipment tracking right in your QuickBooks
-                        Online Invoice</h2>,
-                    tagLine: <p>Our goal is to make it easier for small business owners manage their sales and
-                        collections. Help us get started by backing the first Kickstarter to add shipment tracking
-                        to QuickBooks Online!</p>,
-                    button: <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-xl rounded-pill mt-5">Learn
-                        More</a>,
-                };
-        }
-    }
-
-    setHeader(index) {
-        if (index === null) {
-            this.setState({header: ""})
-        } else {
-            const p = this.headerValues(index);
-            this.setState({
-                header: <Header heading={p.heading} tagLine={p.tagLine} button={p.button} />
-            })
-        }
-    }
-
-    setSections() {
-        const sections = (
-            <React.Fragment>
-                <Section key="1" image="01.jpg" swap="true" heading="Robotic Process Automation as a Service (RPAaaS)"
-                         text=""/>
-                <Section key="2" image="02.jpg" swap="false"
-                         heading="Let Robotic Process Automation return your time to you!" text=""/>
-                <Section key="3" image="03.jpg" swap="true"
-                         heading="Get back to what you started out to do, while accounting takes care of itself"
-                         text=""/>
-                <MailingList />
-            </React.Fragment>
-        );
-        this.setState({sections})
     }
 }
