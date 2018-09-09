@@ -6,6 +6,7 @@ import Footer from "./components/footer";
 import Visitor from "./components/home/visitor";
 import UserPage from "./components/home/user";
 import Service from "./components/service/service"
+import About from "./components/home/about"
 /* global gapi */
 
 class User {
@@ -102,8 +103,8 @@ export default class App extends Component {
             {id: "home_finance", text: "Finance", link: "/home/finances", enabled: false}, /* Service : Home finance */
             {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false},   /* Service : Brainchild */
             {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false},                 /* Service : qb */
-            {id: "public2", text: "Essays", link: "/essays", enabled: false},              /* Essays */
-            {id: "public3", text: "About", link: "/home/about", enabled: false},           /* About / Contact */
+            {id: "public2", text: "Essays", link: "essays", enabled: false},               /* Essays */
+            {id: "public3", text: "About", link: "about", enabled: false},                 /* About / Contact */
             {id: "admin", text: "Admin", link: "/admin", enabled: false},                  /* Admin */
             {id: "user", text: "Account", link: "/account", enabled: false},               /* Account Profile */
             {id: "visitor", text: "Sign In", link: "signin", enabled: false},              /* Sign in */
@@ -230,7 +231,14 @@ export default class App extends Component {
             case "service":
                 this.setState({page: <Service />});
                 break;
+            case "essays":
+                window.location = '/essays';
+                break;
+            case "about":
+                this.setState({page: <About />});
+                break;
             default:
+                window.location = link;
                 break;
         }
     }

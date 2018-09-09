@@ -3,6 +3,7 @@ import Header from "../header";
 import Section from "../section";
 import pythonInfor from "../img/python-infor-logos.png";
 import excelInfor from "../img/excel-infor-logos.png";
+import img01 from "../img/01.jpg";
 
 export default class Service extends Component {
     render() {
@@ -10,6 +11,9 @@ export default class Service extends Component {
             <React.Fragment>
                 <Header heading={<h2 className="masthead-heading mb-0">Project Gallery</h2>}/>
                 {/* /admin/new_project (add project) */}
+                <Section key="0" image={img01} swap="false" heading="Process Automation Platform"
+                         text="We custom-build your process onto our automation platform and your accounting
+                         processes are simply done and ready for you when you come into the office!"/>
                 <Section key="1" image={pythonInfor} swap="true" heading="pylawson"
                          text="Programmatically interact with Lawson financials from within your Python scripts;
                          optionally expose Lawson Add-Ins .NET library for authentication"/>
