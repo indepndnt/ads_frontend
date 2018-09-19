@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-export default class Link extends Component {
+export default class NavLink extends Component {
     render() {
         if (this.props.link === 'signout') {
             return (

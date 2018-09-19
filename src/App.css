@@ -73,7 +73,7 @@ header.masthead {
   overflow: hidden;
   padding-top: calc(7rem + 72px);
   padding-bottom: 7rem;
-    background: url('./components/img/andrew-welch-77146.jpg') no-repeat scroll center center;
+    background: url('base/andrew-welch-77146.jpg') no-repeat scroll center center;
     background-size: cover;
 }
 

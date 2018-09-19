@@ -1,5 +1,5 @@
 import React from 'react';
-import intuit_button from '../components/img/intuit-sign-in.png'
+import intuit_button from './intuit-sign-in.png'
 
 const ForwardingSignIn = SignInComponent => {
     const forwardRef = (props, ref) => {

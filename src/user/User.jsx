@@ -95,7 +95,20 @@ export default class User {
         console.log('refresh token: auth expires in', timeLeft);
         if (timeLeft < 300) {
             this.googleUserInstance.reloadAuthResponse()
-                .then(/* authResponse => POST to /api/session */)
+                .then(authResponse => {
+                    fetch('/api/session', {
+                        method: 'POST',
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        body: JSON.stringify({token: authResponse.id_token}),
+                        credentials: "same-origin",
+                    })
+                        .then(response => {
+                            console.log('refreshed google token', response);
+                            if (response.status > 299) {
+                                alert('Login expired and refresh failed. Try logging in again.')
+                            }
+                        });
+                })
         } else {
             setTimeout(this.refreshToken, (timeLeft - 120) * 1000);
         }
@@ -125,7 +138,7 @@ export default class User {
         if (this.idProvider === 'google') {
             this.googleUserInstance.disconnect();
         } else if (this.idProvider === 'intuit') {
-            console.log('log out from intuit how?')
+            console.log('logged out from intuit');
         }
         this.idProvider = '';
     }
@@ -142,7 +155,7 @@ export default class User {
                 if (url.substring(0, 4) === 'http') {
                     window.location = url;
                 } else {
-                    throw new Error('Intuit sign-in failed!');
+                    throw new Error('Intuit sign-in failed! (' + url + ')');
                 }
             })
             .catch(error => {
@@ -174,10 +187,10 @@ export default class User {
                 if (status > 299) {
                     throw new Error(data);
                 }
-                console.log(status, data);
                 for (const [key, value] of Object.entries(data)) {
                     this._userData[key] = value
                 }
+                this.refreshToken();
                 return this;
             })
             .then(this.callbackUser)

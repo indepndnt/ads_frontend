@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import User from "./user/User"
 import "./App.css";
-import NavBar from "./base/navbar";
-import Footer from "./components/footer";
+import NavBar from "./base/NavBar";
+import Footer from "./base/Footer";
 import Visitor from "./components/home/visitor";
 import UserPage from "./components/home/user";
 import Service from "./components/service/service"
@@ -59,7 +59,7 @@ export default class App extends Component {
         /* set default function on page */
     }
 
-    setupVisitor(user) {
+    setupVisitor(message) {
         // Organize the page according to when no one is logged on.
         const publicLinks = ["public1", "public2", "public3", "visitor"];
         const navLinks = this.state.navLinks.map(l => {
@@ -69,7 +69,7 @@ export default class App extends Component {
 
         this.setState({
             navLinks: navLinks,
-            page: <Visitor/>,
+            page: <Visitor message={message}/>,
         });
 
         // Render the Google Sign-In button
