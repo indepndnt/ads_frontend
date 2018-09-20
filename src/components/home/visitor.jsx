@@ -2,9 +2,9 @@ import React, {Component} from "react";
 import Header from "../header";
 import Section from "../section";
 import MailingList from "../mailingList";
-import img01 from "../img/01.jpg";
-import img02 from "../img/02.jpg";
-import img03 from "../img/03.jpg";
+import img01 from "./01.jpg";
+import img02 from "./02.jpg";
+import img03 from "./03.jpg";
 
 export default class Visitor extends Component {
     render() {

@@ -5,7 +5,7 @@ import NavBar from "./base/NavBar";
 import Footer from "./base/Footer";
 import Visitor from "./components/home/visitor";
 import UserPage from "./components/home/user";
-import Service from "./components/service/service"
+import Service from "./service/service"
 import About from "./components/home/about"
 /*global gapi*/ // eslint-disable-line no-unused-vars
 
@@ -19,7 +19,7 @@ export default class App extends Component {
             {id: "public2", text: "Essays", link: "essays", enabled: false}, /* Essays */
             {id: "public3", text: "About", link: "about", enabled: false}, /* About / Contact */
             {id: "admin", text: "Admin", link: "/admin", enabled: false}, /* Admin */
-            {id: "user", text: "Account", link: "/account", enabled: false}, /* Account Profile */
+            {id: "user", text: "Account", link: "account", enabled: false}, /* Account Profile */
             {id: "visitor", text: "Sign In", link: "signin", enabled: false}, /* Sign in */
             {id: "sign_out", text: "Sign Out", link: "signout", enabled: false}, /* Sign out */
         ],
@@ -47,14 +47,14 @@ export default class App extends Component {
     setupUser() {
         // Organize the page according to the user who has logged in
         let userLinks = ["public1", "public2", "sign_out"];
-        userLinks = userLinks.concat(this.state.user.groups);
+        userLinks = userLinks.concat(this.state.user.groups.map(g => g.id));
         const navLinks = this.state.navLinks.map(l => {
             l.enabled = userLinks.includes(l.id);
             return l;
         });
         this.setState({
             navLinks: navLinks,
-            page: <UserPage/>,
+            page: <UserPage user={this.state.user}/>,
         });
         /* set default function on page */
     }
@@ -96,6 +96,9 @@ export default class App extends Component {
                 break;
             case "about":
                 this.setState({page: <About/>});
+                break;
+            case "account":
+                this.setState({page: <UserPage user={this.state.user}/>});
                 break;
             default:
                 window.location = link;

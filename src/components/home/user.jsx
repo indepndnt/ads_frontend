@@ -3,15 +3,26 @@ import Header from "../header";
 
 export default class UserPage extends Component {
     render() {
+        const email = this.props.user.email;
+        const createDate = this.props.user.createDate;
+        const groups = this.props.user.groups;
         return (
             <React.Fragment>
                 <Header
-                    heading={<h2 className="masthead-heading mb-0">Thank you for joining us!</h2>}
-                    tagLine={<p>Your email address has been added to the mailing list, and you will be notified when
-                        the app is launched! If you have not already done so, please visit the Kickstarter page by
-                        clicking the button below and make a pledge!</p>}
-                    button={<a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-xl rounded-pill mt-5">
-                        Count me in!</a>}/>
+                    heading={<h2 className="masthead-heading mb-0">
+                        <small>Your Account</small>
+                    </h2>}
+                    tagLine={<p>Your email address is {email}</p>}
+                />
+                <div className="container">
+                    <p>Thank you for being a valued member since {createDate}</p>
+                    <p>You are assigned to the following groups:</p>
+                    <ul>
+                        {groups.map(g => <li key={g.id}>
+                            <a href={g.url}>{g.name}</a>
+                            </li>)}
+                    </ul>
+                </div>
             </React.Fragment>
         )
     }

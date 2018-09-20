@@ -8,7 +8,7 @@ export default class User {
         this.context = context;
         this.callbackUser = callbackUser;
         this.callbackVisitor = callbackVisitor;
-        this._userData = {first_name: '', last_name: '', email: '', groups: []};
+        this._userData = {first_name: '', last_name: '', email: '', groups: [], create_date: null};
         this.logout = this.logout.bind(this);
         this.intuitSignIn = this.intuitSignIn.bind(this);
         this.googleSignIn = this.googleSignIn.bind(this);
@@ -88,6 +88,10 @@ export default class User {
 
     get email() {
         return this._userData.email;
+    }
+
+    get createDate() {
+        return this._userData.create_date;
     }
 
     refreshToken() {
