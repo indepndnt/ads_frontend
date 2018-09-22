@@ -3,17 +3,18 @@ import User from "./user/User"
 import "./App.css";
 import NavBar from "./base/NavBar";
 import Footer from "./base/Footer";
-import Visitor from "./components/home/visitor";
-import UserPage from "./components/home/user";
-import Service from "./service/service"
-import About from "./components/home/about"
+import Visitor from "./home/visitor";
+import UserPage from "./home/user";
+import Service from "./service/service";
+import About from "./home/about";
+import Finance from "./finance/Finance";
 /*global gapi*/ // eslint-disable-line no-unused-vars
 
 export default class App extends Component {
     state = {
         navLinks: [
             {id: "public1", text: "Service", link: "service", enabled: false}, /* projects gallery */
-            {id: "home_finance", text: "Finance", link: "/home/finances", enabled: false}, /* Service : Home finance */
+            {id: "home_finance", text: "Finance", link: "finance", enabled: false}, /* Service : Home finance */
             {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false}, /* Service : Brainchild */
             {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false}, /* Service : qb */
             {id: "public2", text: "Essays", link: "essays", enabled: false}, /* Essays */
@@ -80,6 +81,7 @@ export default class App extends Component {
 
     navigateTo(event, link) {
         event.preventDefault();
+        console.log(link);
         switch (link) {
             case "home":
                 if (this.state.user.idProvider) {
@@ -99,6 +101,9 @@ export default class App extends Component {
                 break;
             case "account":
                 this.setState({page: <UserPage user={this.state.user}/>});
+                break;
+            case "finance":
+                this.setState({page: <Finance/>});
                 break;
             default:
                 window.location = link;

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import Header from "../components/header";
-import Section from "../components/section";
+import Header from "../base/Header";
+import Section from "./section";
 import pythonInfor from "./python-infor-logos.png";
 import excelInfor from "./excel-infor-logos.png";
-import img01 from "../components/home/01.jpg";
+import img01 from "../home/01.jpg";
 
 export default class Service extends Component {
     render() {

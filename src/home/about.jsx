@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Header from "../header";
+import Header from "../base/Header";
 
 export default class About extends Component {
     render() {
