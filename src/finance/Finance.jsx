@@ -48,28 +48,26 @@ export default class Finance extends Component {
                                     <li className="list-group-item">
                                         <button className="btn btn-sm btn-primary" onClick={this.runFedLoanTask}
                                                 disabled={this.state.runButtonDisabled}>Run Fedloan Task</button></li>
-                                    <li className="list-group-item">
-                                        <a href="/home/ofx">Test: Query Citi for OFX</a></li>
                                 </ul>
                             </div>
-                            <div className="card m-2 w-100">
-                                <div className="card-header">Upload</div>
-                                <div className="card-body">
-                                    <form action="/home/ofx" method="POST" encType="multipart/form-data">
-                                        <div className="box">
-                                            <div className="form-group">
-                                                <label htmlFor="ofxfile">OFX File</label>
-                                                <input className="form-control" type="file" value="" name="ofxfile"
-                                                       id="ofxfile"/>
-                                                <label htmlFor="finame">Bank Name</label>
-                                                <input className="form-control" type="text" value="Citi" name="finame"
-                                                       id="finame"/>
-                                            </div>
-                                            <button type="submit" className="btn btn-primary form-group">Upload</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                            {/*<div className="card m-2 w-100">*/}
+                                {/*<div className="card-header">Upload</div>*/}
+                                {/*<div className="card-body">*/}
+                                    {/*<form action="/home/ofx" method="POST" encType="multipart/form-data">*/}
+                                        {/*<div className="box">*/}
+                                            {/*<div className="form-group">*/}
+                                                {/*<label htmlFor="ofxfile">OFX File</label>*/}
+                                                {/*<input className="form-control" type="file" value="" name="ofxfile"*/}
+                                                       {/*id="ofxfile"/>*/}
+                                                {/*<label htmlFor="finame">Bank Name</label>*/}
+                                                {/*<input className="form-control" type="text" value="Citi" name="finame"*/}
+                                                       {/*id="finame"/>*/}
+                                            {/*</div>*/}
+                                            {/*<button type="submit" className="btn btn-primary form-group">Upload</button>*/}
+                                        {/*</div>*/}
+                                    {/*</form>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
                         </div>
                         <div className="col-8">
                             <div className="row">

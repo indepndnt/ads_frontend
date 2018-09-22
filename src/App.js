@@ -16,7 +16,7 @@ export default class App extends Component {
             {id: "public1", text: "Service", link: "service", enabled: false}, /* projects gallery */
             {id: "home_finance", text: "Finance", link: "finance", enabled: false}, /* Service : Home finance */
             {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false}, /* Service : Brainchild */
-            {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false}, /* Service : qb */
+            // {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false}, /* Service : qb */
             {id: "public2", text: "Essays", link: "essays", enabled: false}, /* Essays */
             {id: "public3", text: "About", link: "about", enabled: false}, /* About / Contact */
             {id: "admin", text: "Admin", link: "/admin", enabled: false}, /* Admin */

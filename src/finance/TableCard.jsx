@@ -10,7 +10,7 @@ export default class TableCard extends Component {
         const header = this.props.data.data[0].headings;
         const data = this.props.data.data.slice(1);
         return (
-            <div className="card m-1">
+            <div className="card m-2">
                 <div className="card-header">{title}</div>
                 <div className="card-body p-0">
                     <div className="table-responsive">
