@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import FedLoan from "./FedLoan";
+import ThinHeader from "../base/ThinHeader";
 
 export default class Finance extends Component {
     constructor(props) {
@@ -32,11 +33,7 @@ export default class Finance extends Component {
     render() {
         return (
             <React.Fragment>
-                <header className="masthead text-center text-white pb-3 pt-5">
-                    <div className="masthead-content pt-5">
-                        <h2>Finances</h2>
-                    </div>
-                </header>
+                <ThinHeader heading="Finance"/>
                 <div className="container">
                     <div className="row">
                         <div className="col-4">

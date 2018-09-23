@@ -8,7 +8,15 @@ import UserPage from "./home/user";
 import Service from "./service/service";
 import About from "./home/about";
 import Finance from "./finance/Finance";
+import Admin from "./admin/Admin";
 /*global gapi*/ // eslint-disable-line no-unused-vars
+import { library } from '@fortawesome/fontawesome-svg-core'
+// repeat, remove
+import { faPlayCircle, faPauseCircle, faSpinner, faHourglass, faQuestionCircle, faTrash, faInbox, faCompress,
+    faFile, faRedo } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faPlayCircle, faPauseCircle, faSpinner, faHourglass, faQuestionCircle, faTrash, faInbox, faCompress,
+    faFile, faRedo );
 
 export default class App extends Component {
     state = {
@@ -19,7 +27,7 @@ export default class App extends Component {
             // {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false}, /* Service : qb */
             {id: "public2", text: "Essays", link: "essays", enabled: false}, /* Essays */
             {id: "public3", text: "About", link: "about", enabled: false}, /* About / Contact */
-            {id: "admin", text: "Admin", link: "/admin", enabled: false}, /* Admin */
+            {id: "admin", text: "Admin", link: "admin", enabled: false}, /* Admin */
             {id: "user", text: "Account", link: "account", enabled: false}, /* Account Profile */
             {id: "visitor", text: "Sign In", link: "signin", enabled: false}, /* Sign in */
             {id: "sign_out", text: "Sign Out", link: "signout", enabled: false}, /* Sign out */
@@ -55,7 +63,8 @@ export default class App extends Component {
         });
         this.setState({
             navLinks: navLinks,
-            page: <UserPage user={this.state.user}/>,
+            page: <Admin/>,
+            // page: <UserPage user={this.state.user}/>,
         });
         /* set default function on page */
     }
@@ -93,9 +102,6 @@ export default class App extends Component {
             case "service":
                 this.setState({page: <Service/>});
                 break;
-            case "essays":
-                window.location = '/essays';
-                break;
             case "about":
                 this.setState({page: <About/>});
                 break;
@@ -104,6 +110,12 @@ export default class App extends Component {
                 break;
             case "finance":
                 this.setState({page: <Finance/>});
+                break;
+            case "admin":
+                this.setState({page: <Admin/>});
+                break;
+            case "essays":
+                window.location = '/essays';
                 break;
             default:
                 window.location = link;
