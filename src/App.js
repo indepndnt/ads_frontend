@@ -64,8 +64,8 @@ export default class App extends Component {
         });
         this.setState({
             navLinks: navLinks,
-            page: <Brainchild/>,
-            // page: <UserPage user={this.state.user}/>,
+            // page: <Brainchild/>,
+            page: <UserPage user={this.state.user}/>,
         });
         /* set default function on page */
     }
