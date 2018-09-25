@@ -9,6 +9,7 @@ import Service from "./service/service";
 import About from "./home/about";
 import Finance from "./finance/Finance";
 import Admin from "./admin/Admin";
+import Brainchild from "./brainchild/Brainchild";
 /*global gapi*/ // eslint-disable-line no-unused-vars
 import { library } from '@fortawesome/fontawesome-svg-core'
 // repeat, remove
@@ -23,7 +24,7 @@ export default class App extends Component {
         navLinks: [
             {id: "public1", text: "Service", link: "service", enabled: false}, /* projects gallery */
             {id: "home_finance", text: "Finance", link: "finance", enabled: false}, /* Service : Home finance */
-            {id: "brainchild", text: "Brainchild", link: "/brainchild", enabled: false}, /* Service : Brainchild */
+            {id: "brainchild", text: "Brainchild", link: "brainchild", enabled: false}, /* Service : Brainchild */
             // {id: "quickbooks", text: "QBO", link: "/qbo", enabled: false}, /* Service : qb */
             {id: "public2", text: "Essays", link: "essays", enabled: false}, /* Essays */
             {id: "public3", text: "About", link: "about", enabled: false}, /* About / Contact */
@@ -63,7 +64,7 @@ export default class App extends Component {
         });
         this.setState({
             navLinks: navLinks,
-            page: <Admin/>,
+            page: <Brainchild/>,
             // page: <UserPage user={this.state.user}/>,
         });
         /* set default function on page */
@@ -90,7 +91,6 @@ export default class App extends Component {
 
     navigateTo(event, link) {
         event.preventDefault();
-        console.log(link);
         switch (link) {
             case "home":
                 if (this.state.user.idProvider) {
@@ -113,6 +113,9 @@ export default class App extends Component {
                 break;
             case "admin":
                 this.setState({page: <Admin/>});
+                break;
+            case "brainchild":
+                this.setState({page: <Brainchild/>});
                 break;
             case "essays":
                 window.location = '/essays';

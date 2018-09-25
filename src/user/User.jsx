@@ -113,8 +113,10 @@ export default class User {
                             }
                         });
                 })
-        } else {
+        } else if (timeLeft) {
             setTimeout(this.refreshToken, (timeLeft - 120) * 1000);
+        } else {
+            this.googleSignIn();
         }
     }
 

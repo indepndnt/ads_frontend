@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import ThinHeader from "../base/ThinHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/*global AbortController*/
 
 export default class Admin extends Component {
     constructor(props) {
@@ -14,6 +15,10 @@ export default class Admin extends Component {
             jobs: [{id: '', description: 'loading ...', origin: '', excInfo: '', createdAt: '', endedAt: ''}],
             recentJobs: [{job_id: '', description: 'loading ...', result: '', started: '', ended: ''}],
         };
+        this.refreshQueueInterval = null;
+        this.refreshJobsInterval = null;
+        this.controller = new AbortController();
+        this.signal = this.controller.signal;
         this.setQueues = this.setQueues.bind(this);
         this.setJobs = this.setJobs.bind(this);
         this.handleRequeue = this.handleRequeue.bind(this);
@@ -24,21 +29,34 @@ export default class Admin extends Component {
     componentDidMount() {
         this.setQueues();
         this.setJobs('failed');
+        this.refreshQueueInterval = setInterval(this.setQueues, 30000);
+        this.refreshJobsInterval = setInterval(this.setJobs, 10000, null);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.refreshQueueInterval);
+        clearInterval(this.refreshJobsInterval);
+        this.controller.abort();
     }
 
     setQueues() {
         fetch('/api/admin/queue', {
             method: 'GET',
             credentials: "same-origin",
+            signal: this.signal,
         })
             .then(response => response.json())
             .then(data => this.setState(data));
     }
 
     setJobs(queue) {
+        if (queue === null) {
+            queue = this.state.queue;
+        }
         fetch('/api/admin/jobs?queue=' + queue, {
             method: 'GET',
             credentials: "same-origin",
+            signal: this.signal,
         })
             .then(response => response.json())
             .then(data => this.setState({jobs: data.jobs, recentJobs: data.recentJobs, queue}));
@@ -53,6 +71,7 @@ export default class Admin extends Component {
                 queue: this.state.queue,
                 job: jobId,
             }),
+            signal: this.signal,
         })
             .then(response => response.json())
             .then(data => {
@@ -70,6 +89,7 @@ export default class Admin extends Component {
                 queue: this.state.queue,
                 job: jobId,
             }),
+            signal: this.signal,
         })
             .then(response => response.json())
             .then(data => {
@@ -86,6 +106,7 @@ export default class Admin extends Component {
             body: JSON.stringify({
                 queue: this.state.queue,
             }),
+            signal: this.signal,
         })
             .then(response => response.json())
             .then(data => {
