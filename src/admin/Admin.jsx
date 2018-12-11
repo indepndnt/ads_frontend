@@ -247,8 +247,7 @@ export default class Admin extends Component {
                                 <th>Description</th>
                                 <th>Status</th>
                                 <th>Result</th>
-                                <th>Started At</th>
-                                <th>Ended At</th>
+                                <th>Started/Ended</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -258,8 +257,7 @@ export default class Admin extends Component {
                                     <td>{h.description}</td>
                                     <td>{h.status}</td>
                                     <td>{h.result}</td>
-                                    <td>{h.started}</td>
-                                    <td>{h.ended}</td>
+                                    <td><small>{h.started}<br/>{h.ended}</small></td>
                                 </tr>
                             )}
                             </tbody>
