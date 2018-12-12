@@ -15,6 +15,7 @@ export default class Section extends Component {
                     <div className="p-5">
                       <h2 className="display-4">{this.props.heading}</h2>
                       <p>{this.props.text}</p>
+                        {this.props.button}
                     </div>
                   </div>
                 </div>

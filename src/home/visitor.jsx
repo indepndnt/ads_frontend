@@ -11,21 +11,20 @@ export default class Visitor extends Component {
         return (
             <React.Fragment>
                 <Header
-                    heading={<h2 className="masthead-heading mb-0">Live shipment tracking right in your QuickBooks
-                        Online Invoice</h2>}
-                    tagLine={<p>Our goal is to make it easier for small business owners manage their sales and
-                        collections. Help us get started by backing the first Kickstarter to add shipment tracking
-                        to QuickBooks Online!</p>}
-                    button={<a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-xl rounded-pill mt-5">Learn
-                        More</a>}/>
-                <Section key="1" image={img01} swap="true" heading="Robotic Process Automation as a Service (RPAaaS)"
-                         text=""/>
-                <Section key="2" image={img02} swap="false"
-                         heading="Let Robotic Process Automation return your time to you!" text=""/>
-                <Section key="3" image={img03} swap="true"
-                         heading="Get back to what you started out to do, while accounting takes care of itself"
-                         text=""/>
+                    heading={<h2 className="masthead-heading mb-0">EDI Compliance Made Simple</h2>}
+                    tagLine={<p>The EDI solution for your small business. We bring the simplicity to retail
+                        trading.</p>}
+                    button={<a href="" className="btn btn-primary btn-xl rounded-pill mt-5"
+                               onClick={(event) => this.props.onLink(event, "about")}>Learn More</a>}/>
                 <MailingList/>
+                <Section key="1" image={img02} swap="true" heading="Save your time for the important things"
+                         text="We'll take care of making sure your orders get to the warehouse."/>
+                <Section key="2" image={img01} swap="false" heading="Robotic Process Automation"
+                         text="means there's no such thing as &quot;can't&quot;"/>
+                <Section key="3" image={img03} swap="true" heading="Live shipment tracking"
+                         text="right in your QuickBooks Online Invoice" button={
+                             <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-lg rounded-pill mt-5">
+                                 Learn More</a>}/>
             </React.Fragment>
         )
     }

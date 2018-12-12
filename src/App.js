@@ -80,7 +80,7 @@ export default class App extends Component {
 
         this.setState({
             navLinks: navLinks,
-            page: <Visitor message={message}/>,
+            page: <Visitor message={message} onLink={this.navigateTo}/>,
         });
 
         // Render the Google Sign-In button
