@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import User from "./user/User"
 import "./App.css";
 import NavBar from "./base/NavBar";
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Footer from "./base/Footer";
 import Visitor from "./home/visitor";
 import UserPage from "./home/user";
@@ -11,13 +12,15 @@ import Finance from "./finance/Finance";
 import Admin from "./admin/Admin";
 import Brainchild from "./brainchild/Brainchild";
 /*global gapi*/ // eslint-disable-line no-unused-vars
-import { library } from '@fortawesome/fontawesome-svg-core'
+import {library} from '@fortawesome/fontawesome-svg-core'
 // repeat, remove
-import { faPlayCircle, faPauseCircle, faSpinner, faHourglass, faQuestionCircle, faTrash, faInbox, faCompress,
-    faFile, faRedo } from '@fortawesome/free-solid-svg-icons'
+import {
+    faPlayCircle, faPauseCircle, faSpinner, faHourglass, faQuestionCircle, faTrash, faInbox, faCompress,
+    faFile, faRedo
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faPlayCircle, faPauseCircle, faSpinner, faHourglass, faQuestionCircle, faTrash, faInbox, faCompress,
-    faFile, faRedo );
+    faFile, faRedo);
 
 export default class App extends Component {
     state = {
@@ -33,13 +36,13 @@ export default class App extends Component {
             {id: "visitor", text: "Sign In", link: "signin", enabled: false}, /* Sign in */
             {id: "sign_out", text: "Sign Out", link: "signout", enabled: false}, /* Sign out */
         ],
+        page: <div/>
     };
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.setupVisitor = this.setupVisitor.bind(this);
         this.setupUser = this.setupUser.bind(this);
-        this.navigateTo = this.navigateTo.bind(this);
         this.state.user = new User(this, this.setupUser, this.setupVisitor);
         this.refGoogleSignInButton = React.createRef();
     }
@@ -80,7 +83,7 @@ export default class App extends Component {
 
         this.setState({
             navLinks: navLinks,
-            page: <Visitor message={message} onLink={this.navigateTo}/>,
+            page: <Visitor message={message}/>,
         });
 
         // Render the Google Sign-In button
@@ -89,53 +92,24 @@ export default class App extends Component {
         }
     }
 
-    navigateTo(event, link) {
-        event.preventDefault();
-        switch (link) {
-            case "home":
-                if (this.state.user.idProvider) {
-                    this.setupUser(this.state.user)
-                } else {
-                    this.setupVisitor(this.state.user)
-                }
-                break;
-            case "service":
-                this.setState({page: <Service/>});
-                break;
-            case "about":
-                this.setState({page: <About/>});
-                break;
-            case "account":
-                this.setState({page: <UserPage user={this.state.user}/>});
-                break;
-            case "finance":
-                this.setState({page: <Finance/>});
-                break;
-            case "admin":
-                this.setState({page: <Admin/>});
-                break;
-            case "brainchild":
-                this.setState({page: <Brainchild/>});
-                break;
-            case "essays":
-                window.location = '/essays';
-                break;
-            default:
-                window.location = link;
-                break;
-        }
-    }
-
     render() {
         return (
-            <React.Fragment>
-                <NavBar links={this.state.navLinks.filter(l => l.enabled)}
-                        onLink={this.navigateTo}
-                        ref={this.refGoogleSignInButton}
-                        user={this.state.user}/>
-                {this.state.page}
-                <Footer/>
-            </React.Fragment>
+            <Router>
+                <React.Fragment>
+                    <NavBar links={this.state.navLinks.filter(l => l.enabled)}
+                            ref={this.refGoogleSignInButton}
+                            user={this.state.user}/>
+                    <Route path='/' exact render={() => this.state.page}/>
+                    <Route path='/service' component={Service}/>
+                    <Route path='/finance' component={Finance}/>
+                    <Route path='/brainchild' component={Brainchild}/>
+                    <Route path='/essays' component={About}/>
+                    <Route path='/admin' component={Admin}/>
+                    <Route path='/account' render={() => <UserPage user={this.state.user}/>}/>
+                    <Route path='/about' component={About}/>
+                    <Footer/>
+                </React.Fragment>
+            </Router>
         )
     }
 }

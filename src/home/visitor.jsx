@@ -5,6 +5,7 @@ import MailingList from "./mailingList";
 import img01 from "./01.jpg";
 import img02 from "./02.jpg";
 import img03 from "./03.jpg";
+import { Link } from 'react-router-dom';
 
 export default class Visitor extends Component {
     render() {
@@ -14,8 +15,8 @@ export default class Visitor extends Component {
                     heading={<h2 className="masthead-heading mb-0">EDI Compliance Made Simple</h2>}
                     tagLine={<p>The EDI solution for your small business. We bring the simplicity to retail
                         trading.</p>}
-                    button={<a href="" className="btn btn-primary btn-xl rounded-pill mt-5"
-                               onClick={(event) => this.props.onLink(event, "about")}>Learn More</a>}/>
+                    button={<Link className="btn btn-primary btn-xl rounded-pill mt-5" to={'/about'}>Learn More</Link>}
+                />
                 <MailingList/>
                 <Section key="1" image={img02} swap="true" heading="Save your time for the important things"
                          text="We'll take care of making sure your orders get to the warehouse."/>

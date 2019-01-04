@@ -120,8 +120,7 @@ export default class User {
         }
     }
 
-    logout(event) {
-        event.preventDefault();
+    logout() {
         fetch('/api/session', {
             method: 'DELETE',
             headers: {'X-Requested-With': 'XMLHttpRequest'},
