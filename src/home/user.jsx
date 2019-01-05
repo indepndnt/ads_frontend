@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Link} from 'react-router-dom';
 import Header from "../base/Header";
 
 export default class UserPage extends Component {
@@ -19,7 +20,7 @@ export default class UserPage extends Component {
                     <p>You are assigned to the following groups:</p>
                     <ul>
                         {groups.map(g => <li key={g.id}>
-                            <a href={g.url}>{g.name}</a>
+                            <Link to={g.url}>{g.name}</Link>
                             </li>)}
                     </ul>
                 </div>

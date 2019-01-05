@@ -10,6 +10,8 @@ import Service from "./service/service";
 import About from "./home/about";
 import Finance from "./finance/Finance";
 import Admin from "./admin/Admin";
+import EssayIndex from "./essays/essayIndex";
+import EssayEntry from './essays/essayEntry';
 import Brainchild from "./brainchild/Brainchild";
 /*global gapi*/ // eslint-disable-line no-unused-vars
 import {library} from '@fortawesome/fontawesome-svg-core'
@@ -38,6 +40,14 @@ export default class App extends Component {
         ],
         page: <div/>
     };
+
+    essays = [
+        '/unlocking-quickbooks-api-in-a-local-python-script',
+        '/refactoring-selenium-to-robobrowser-in-python',
+        '/unlocking-quickbooks-api-in-a-python-web-app',
+        '/end-user-license-agreement',
+        '/privacy-policy',
+    ];
 
     constructor(props) {
         super(props);
@@ -103,10 +113,15 @@ export default class App extends Component {
                     <Route path='/service' component={Service}/>
                     <Route path='/finance' component={Finance}/>
                     <Route path='/brainchild' component={Brainchild}/>
-                    <Route path='/essays' component={About}/>
+                    <Route path='/essays' component={EssayIndex}/>
                     <Route path='/admin' component={Admin}/>
                     <Route path='/account' render={() => <UserPage user={this.state.user}/>}/>
                     <Route path='/about' component={About}/>
+                    {this.essays.map((url, i, essays) =>
+                        <Route key={i} path={url} render={() =>
+                            <EssayEntry url={url} prev={essays[i + 1]} next={essays[i - 1]}/>}
+                        />)
+                    }
                     <Footer/>
                 </React.Fragment>
             </Router>
