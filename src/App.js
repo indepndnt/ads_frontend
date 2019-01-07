@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import User from "./user/User"
 import "./App.css";
 import NavBar from "./base/NavBar";
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import Footer from "./base/Footer";
 import Visitor from "./home/visitor";
 import UserPage from "./home/user";
@@ -109,19 +109,21 @@ export default class App extends Component {
                     <NavBar links={this.state.navLinks.filter(l => l.enabled)}
                             ref={this.refGoogleSignInButton}
                             user={this.state.user}/>
-                    <Route path='/' exact render={() => this.state.page}/>
-                    <Route path='/service' component={Service}/>
-                    <Route path='/finance' component={Finance}/>
-                    <Route path='/brainchild' component={Brainchild}/>
-                    <Route path='/essays' component={EssayIndex}/>
-                    <Route path='/admin' component={Admin}/>
-                    <Route path='/account' render={() => <UserPage user={this.state.user}/>}/>
-                    <Route path='/about' component={About}/>
-                    {this.essays.map((url, i, essays) =>
-                        <Route key={i} path={url} render={() =>
-                            <EssayEntry url={url} prev={essays[i + 1]} next={essays[i - 1]}/>}
-                        />)
-                    }
+                    <Switch>
+                        <Route path='/' exact render={() => this.state.page}/>
+                        <Route path='/service' component={Service}/>
+                        <Route path='/finance' component={Finance}/>
+                        <Route path='/brainchild' component={Brainchild}/>
+                        <Route path='/essays' component={EssayIndex}/>
+                        <Route path='/admin' component={Admin}/>
+                        <Route path='/account' render={() => <UserPage user={this.state.user}/>}/>
+                        <Route path='/about' component={About}/>
+                        {this.essays.map((url, i, essays) =>
+                            <Route key={i} path={url} render={() =>
+                                <EssayEntry url={url} prev={essays[i + 1]} next={essays[i - 1]}/>}
+                            />)
+                        }
+                    </Switch>
                     <Footer/>
                 </React.Fragment>
             </Router>
