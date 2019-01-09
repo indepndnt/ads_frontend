@@ -13,7 +13,8 @@
     "react-dom": "^16.4.2",
     "react-scripts": "1.1.5",
     "recharts": "^1.2.0",
-    "react-router-dom": "latest"
+    "react-router-dom": "latest",
+    "react-bootstrap4-modal": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

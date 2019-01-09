@@ -1,66 +1,34 @@
 import React, {Component} from "react";
 import ThinHeader from "../base/ThinHeader";
-import {ResponsiveContainer, PieChart, Pie, Legend, Tooltip, Cell} from "recharts";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Order from './order';
+import TaskList from './tasks';
+import Modal from 'react-bootstrap4-modal';
 /*global AbortController*/
 
 export default class Brainchild extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            statusBody: '',
-            statusFooter: '',
-            recentEvents: [{date: '', text: 'loading ...'}],
+            showStatus: false,
+            statusMessage: '',
+            orderDates: [],
         };
         this.refreshQueueInterval = null;
         this.controller = new AbortController();
         this.signal = this.controller.signal;
         this.setRecentEvents = this.setRecentEvents.bind(this);
-        this.setStatusChart = this.setStatusChart.bind(this);
         this.handleTask = this.handleTask.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
 
     componentDidMount() {
         this.setRecentEvents();
-        this.setStatusChart();
         // this.refreshQueueInterval = setInterval(this.setQueues, 30000);
     }
 
     componentWillUnmount() {
         // clearInterval(this.refreshQueueInterval);
         this.controller.abort();
-    }
-
-    setStatusChart() {
-        const colors = {
-            New: '#f47830',
-            AsnPrepared: '#d18504',
-            Warehouse: '#ab8f00',
-            AsnSent: '#839400',
-            InvPrepared: '#569626',
-            InvSent: '#0b9545',
-            Cancel: '#808080',
-        };
-        fetch('/api/brainchild/status', {
-            method: 'GET',
-            credentials: "same-origin",
-            signal: this.signal,
-        })
-            .then(response => response.json())
-            .then(data => this.setState({
-                statusBody: <ResponsiveContainer width="100%" height={400}>
-                    <PieChart>
-                        <Pie data={data}
-                             nameKey="label" dataKey="value" label={({index}) => data[index].label}
-                             outerRadius={70} innerRadius={30} paddingAngle={1}>
-                            {data.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[entry.label]}/>)}
-                        </Pie>
-                        <Tooltip/>
-                        <Legend layout="vertical" align="center" verticalAlign="bottom"/>
-                    </PieChart>
-                </ResponsiveContainer>,
-                statusFooter: data.footer,
-            }))
     }
 
     setRecentEvents() {
@@ -70,7 +38,7 @@ export default class Brainchild extends Component {
             signal: this.signal,
         })
             .then(response => response.json())
-            .then(data => this.setState({recentEvents: data}));
+            .then(data => this.setState({orderDates: data}));
     }
 
     handleTask(event, task) {
@@ -84,12 +52,11 @@ export default class Brainchild extends Component {
             signal: this.signal,
         })
             .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    statusBody: <p>{data.message}</p>,
-                    statusFooter: <button onClick={this.setStatusChart}>Chart</button>
-                });
-            })
+            .then(data => this.setState({statusMessage: data.message, showStatus: true}))
+    }
+
+    closeModal() {
+        this.setState({showStatus: false});
     }
 
     render() {
@@ -97,78 +64,23 @@ export default class Brainchild extends Component {
             <React.Fragment>
                 <ThinHeader heading="Brainchild"/>
                 <div className="container">
-                    <div className="card-deck">
-                        <div className="card">
-                            <div className="card-header">
-                                <h3>Status</h3>
-                            </div>
-                            <div className="card-body">
-                                {this.state.statusBody}
-                            </div>
-                            <div className="card-footer text-right">
-                                {this.state.statusFooter}
-                            </div>
+                    <div className="row">
+                        <div className="col-sm-9">
+                            {this.state.orderDates.map(d => <Order key={d} date={d}/>)}
                         </div>
-                        <div className="card">
-                            <div className="card-header">
-                                <h3>Recent Events</h3>
+                        <Modal visible={this.state.showStatus} onClickBackdrop={this.closeModal}
+                               dialogClassName="modal-dialog-centered">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Task Run</h5>
                             </div>
-                            <div className="card-body">
-                                <div className="list-group">
-                                    {this.state.recentEvents.map(po =>
-                                        <a href={"/brainchild/inv_detail?po_date=" + po.date}
-                                           key={po.date} className="list-group-item">
-                                            <span className="badge">{po.date}</span><FontAwesomeIcon
-                                            icon="inbox"/> {po.text}
-                                        </a>
-                                    )}
-                                </div>
+                            <div className="modal-body">
+                                <p>{this.state.statusMessage}</p>
                             </div>
-                            <div className="card-footer text-right">
-                                <a href="/brainchild/inv_detail"><FontAwesomeIcon icon="play-circle"/> View All
-                                    Activity</a>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={this.closeModal}>OK</button>
                             </div>
-                        </div>
-                        <div className="card">
-                            <div className="card-header">
-                                <h3>Tasks</h3>
-                            </div>
-                            <div className="card-body">
-                                <div className="list-group">
-                                    <small><b>Processing New Orders</b></small>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'po_search')}>1. Search for POs</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'asns')}>2. Create ASN's</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'addresses')}>3. Validate Addresses</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'warehouse')}>4. Send Warehouse Files</a>
-                                </div>
-                                <div className="list-group">
-                                    <small><b>After Shipping is Added</b></small>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'send_asns')}>1. Send ASN's</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'prep_inv')}>2. Prepare Invoices</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'send_inv')}>3. Send Invoices</a>
-                                </div>
-                                <div className="list-group">
-                                    <small><b>Other Tasks</b></small>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'dfwd_summary')}>Monthly Orders Report</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'year_report')}>Download season detail</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'worldship')}>Send UPS Worldship File</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'packing_slips')}>Send Packing Slips</a>
-                                    <a href="" className="list-group-item"
-                                       onClick={e => this.handleTask(e, 'homedepot_com')}>Query CommerceHub</a>
-                                </div>
-                            </div>
-                        </div>
+                        </Modal>
+                        <TaskList taskHandler={this.handleTask}/>
                     </div>
                 </div>
             </React.Fragment>
