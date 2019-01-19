@@ -15,7 +15,7 @@ export default class Visitor extends Component {
                     heading={<h2 className="masthead-heading mb-0">EDI Compliance Made Simple</h2>}
                     tagLine={<p>The EDI solution for your small business. We bring the simplicity to retail
                         trading.</p>}
-                    button={<Link className="btn btn-primary btn-xl rounded-pill mt-5" to={'/about'}>Learn More</Link>}
+                    button={<Link className="btn btn-primary btn-xl rounded-pill mt-5" to={'/service'}>Learn More</Link>}
                 />
                 <MailingList/>
                 <Section key="1" image={img02} swap="true" heading="Save your time for the important things"
