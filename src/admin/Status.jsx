@@ -154,9 +154,9 @@ export default class Status extends Component {
                             <tbody>
                             {this.state.workers.map(w =>
                                 <tr data-role="worker" key={w.name}>
-                                    <td><i title={w.currentJob}>
+                                    <td>{w.state === "" ? "" : <i title={w.currentJob}>
                                         <FontAwesomeIcon icon={w.state} size="lg" pulse={w.state === "spinner"}/>
-                                    </i></td>
+                                    </i>}</td>
                                     <td>{w.name}</td>
                                     <td>{w.queues}</td>
                                 </tr>

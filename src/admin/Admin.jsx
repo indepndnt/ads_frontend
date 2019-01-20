@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import ThinHeader from "../base/ThinHeader";
 import Tabs from "../base/Tabs";
 import Status from "./Status";
+import Users from "./Users";
 
 export default class Admin extends Component {
     render() {
@@ -11,7 +12,7 @@ export default class Admin extends Component {
                 <div className="container">
                     <Tabs>
                         <Status label="Workers"/>
-                        <a label="Users" className="btn btn-primary" href="/admin/accounts">Maintain Users</a>
+                        <Users label="Users"/>
                         <a label="Essays" className="btn btn-primary" href="/essays/drafts">Maintain Draft Essays</a>
                     </Tabs>
                 </div>
