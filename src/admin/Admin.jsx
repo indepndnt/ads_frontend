@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import ThinHeader from "../base/ThinHeader";
 import Tabs from "../base/Tabs";
 import Status from "./Status";
+import Brainchild from "./Brainchild";
 import Users from "./Users";
 
 export default class Admin extends Component {
@@ -13,7 +14,7 @@ export default class Admin extends Component {
                     <Tabs>
                         <Status label="Workers"/>
                         <Users label="Users"/>
-                        <a label="Essays" className="btn btn-primary" href="/essays/drafts">Maintain Draft Essays</a>
+                        <Brainchild label="Brainchild"/>
                     </Tabs>
                 </div>
             </React.Fragment>

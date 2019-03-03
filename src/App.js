@@ -8,6 +8,7 @@ import Visitor from "./home/visitor";
 import UserPage from "./home/user";
 import Service from "./service/service";
 import About from "./home/about";
+import ThankYou from "./home/thankyou";
 import Finance from "./finance/Finance";
 import Admin from "./admin/Admin";
 import EssayIndex from "./essays/essayIndex";
@@ -118,6 +119,7 @@ export default class App extends Component {
                         <Route path='/admin' component={Admin}/>
                         <Route path='/account' render={() => <UserPage user={this.state.user}/>}/>
                         <Route path='/about' component={About}/>
+                        <Route path='/thankyou' component={ThankYou}/>
                         {this.essays.map((url, i, essays) =>
                             <Route key={i} path={url} render={() =>
                                 <EssayEntry url={url} prev={essays[i + 1]} next={essays[i - 1]}/>}

@@ -1,8 +1,7 @@
 import React, {Component} from "react";
 import ThinHeader from "../base/ThinHeader";
-import Order from './order';
-import TaskList from './tasks';
-import Modal from 'react-bootstrap4-modal';
+import Tabs from "../base/Tabs";
+import Status from "./Brainchild";
 /*global AbortController*/
 
 export default class Brainchild extends Component {
@@ -64,24 +63,11 @@ export default class Brainchild extends Component {
             <React.Fragment>
                 <ThinHeader heading="Brainchild"/>
                 <div className="container">
-                    <div className="row">
-                        <div className="col-sm-9">
-                            {this.state.orderDates.map(d => <Order key={d} date={d}/>)}
-                        </div>
-                        <Modal visible={this.state.showStatus} onClickBackdrop={this.closeModal}
-                               dialogClassName="modal-dialog-centered">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Task Run</h5>
-                            </div>
-                            <div className="modal-body">
-                                <p>{this.state.statusMessage}</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={this.closeModal}>OK</button>
-                            </div>
-                        </Modal>
-                        <TaskList taskHandler={this.handleTask}/>
-                    </div>
+                    <Tabs>
+                        <Status label="Status" signal={this.signal}/>
+                        <a href="#" label="nah"/>
+                        <a href="#" label="wat"/>
+                    </Tabs>
                 </div>
             </React.Fragment>
         )

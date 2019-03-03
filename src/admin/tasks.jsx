@@ -4,7 +4,7 @@ export default class TaskList extends Component {
     render() {
         const handle = this.props.taskHandler;
         return (
-            <div className="col">
+            <div className="col card-group">
                 <div className="card">
                     <div className="card-header">
                         <small>Processing New Orders</small>
