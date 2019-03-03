@@ -93,9 +93,9 @@ export default class About extends Component {
                                       placeholder=" type your message here" required value={this.state.message}
                                       onChange={this.handleChange}/>
                         </div>
-                        <div className="form-group">
-                            <button type="submit" className="btn btn-primary">Send Message</button>
-                        </div>
+                        <button type="submit" className="btn btn-primary">Send Message</button> &nbsp;
+                        or email us at <a href="mailto:contact@accountingdatasolutions.com">
+                        contact@accountingdatasolutions.com</a>
                     </form>
                 </div>
             </React.Fragment>

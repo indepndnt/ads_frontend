@@ -1,28 +1,31 @@
 import React, {Component} from "react";
 import Order from './order';
+/*global AbortController*/
 
 export default class Status extends Component {
     constructor(props) {
-        console.log('status constructor');
         super(props);
         this.state = {
             orderDates: [],
         };
-        // this.signal = this.props.signal;
+        this.controller = new AbortController();
+        this.signal = this.controller.signal;
         this.setRecentEvents = this.setRecentEvents.bind(this);
     }
 
     componentDidMount() {
-        console.log('status did mount');
-        // this.setRecentEvents();
+        this.setRecentEvents();
+    }
+
+    componentWillUnmount() {
+        this.controller.abort();
     }
 
     setRecentEvents() {
-        console.log('set recent events');
         fetch('/api/brainchild/events', {
             method: 'GET',
             credentials: "same-origin",
-            // signal: this.signal,
+            signal: this.signal,
         })
             .then(response => response.json())
             .then(data => this.setState({orderDates: data}));
