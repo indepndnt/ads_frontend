@@ -18,6 +18,7 @@ export default class User {
 
     gapiLoadWhenReady(script) {
         const checkForLoggedInUser = this.checkForLoggedInUser.bind(this);
+        const googleLoginError = this.googleLoginError.bind(this);
         if (script.getAttribute('gapi_processed')) {
             // Load the auth2 instance
             gapi.load('auth2', function () {
@@ -25,7 +26,7 @@ export default class User {
                     client_id: '444058961244-j1ceheocuu09gfllsr0omgle5963n32i.apps.googleusercontent.com',
                     // Scopes to request in addition to 'profile' and 'email'
                     //scope: 'additional_scope'
-                }).then(checkForLoggedInUser);
+                }).then(checkForLoggedInUser, googleLoginError);
             });
         } else {
             setTimeout(() => {
@@ -56,6 +57,13 @@ export default class User {
         }
     }
 
+    googleLoginError(error) {
+        // If an error is raised while initializing (this can happen in old unsupported browsers)
+        console.log('Google authentication error:');
+        console.log(error);
+        this.logout();
+    }
+
     renderButton() {
         // Render the Google Sign-In button
         gapi.signin2.render('googleSignIn', {
@@ -64,7 +72,7 @@ export default class User {
             'height': 26,
             'theme': 'dark',
             'onsuccess': this.googleSignIn,
-            // 'onfailure': () => {}
+            'onfailure': () => {this.googleLoginError('Sign-in button failure')}
         });
     }
 
