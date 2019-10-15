@@ -1,37 +1,50 @@
-import React from 'react';
-import logo from './ads_logo_web.png'
-import NavLink from './NavLink'
-import SignIn from './SignInButtons';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import logo from "./ads_logo_web.png";
+import intuit_button from "./intuit-sign-in.png";
 
-const ForwardingNavBar = NavBarComponent => {
-    const forwardRef = (props, ref) => {
-        return <NavBarComponent forwardRef={ref} {...props}/>;
-    };
-    return React.forwardRef(forwardRef)
+const NavBarComponent = props => {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(!isOpen);
+  return (
+    <Navbar color="dark" dark expand="lg">
+      <NavbarBrand tag={Link} to="/">
+        <img src={logo} alt="Accounting Data Solutions" />
+      </NavbarBrand>
+      <NavbarToggler onClick={toggle} />
+      <Collapse isOpen={isOpen} navbar>
+        <Nav>
+          {props.links.map(link => (
+            <NavItem key={link.id}>
+              <NavLink tag={Link} to={link.link}>
+                {link.text}
+              </NavLink>
+            </NavItem>
+          ))}
+        </Nav>
+      </Collapse>
+      <Nav>
+        <NavItem>
+          {props.user ? (
+            <NavLink onClick={props.user.logout}>Sign out</NavLink>
+          ) : (
+            <NavLink className="nav-signin" onClick={props.handleLogin}>
+              <img src={intuit_button} alt="Sign in with Intuit" />
+            </NavLink>
+          )}
+        </NavItem>
+      </Nav>
+    </Navbar>
+  );
 };
 
-const StatelessNavBar = ({forwardRef, children, ...props}) => (
-    <nav className="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
-        <div className="container">
-            <Link className="navbar-brand" to='/'><img src={logo} alt="Accounting Data Solutions"/></Link>
-            <button className="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"/>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarResponsive">
-                <ul className="navbar-nav ml-auto">
-                    {props.links.map(link => (link.link === 'signin' ?
-                        <SignIn key={link.id} user={props.user} ref={forwardRef}/> :
-                        <NavLink key={link.id} link={link.link} text={link.text} user={props.user}/>))
-                    }
-                </ul>
-            </div>
-        </div>
-    </nav>
-);
-
-const NavBar = ForwardingNavBar(StatelessNavBar);
-
-export default NavBar;
+export default NavBarComponent;

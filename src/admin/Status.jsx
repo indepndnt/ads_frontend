@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 /*global AbortController*/
 
 export default class Status extends Component {
@@ -130,11 +130,11 @@ export default class Status extends Component {
                             <tbody>
                             {this.state.queues.map(q =>
                                 <tr key={q.name} className={q.name === 'failed' && q.count > 0 ? 'text-danger' : ''}>
-                                    <td><FontAwesomeIcon icon="inbox" size="lg"/>
-                                        <a href="" onClick={event => {
+                                    <td>
+                                        <button onClick={event => {
                                             event.preventDefault();
                                             this.setJobs(q.name)
-                                        }}>{q.name}</a></td>
+                                        }}>{q.name}</button></td>
                                     <td className="narrow">{q.count}</td>
                                 </tr>
                             )}
@@ -155,7 +155,7 @@ export default class Status extends Component {
                             {this.state.workers.map(w =>
                                 <tr data-role="worker" key={w.name}>
                                     <td>{w.state === "" ? "" : <i title={w.currentJob}>
-                                        <FontAwesomeIcon icon={w.state} size="lg" pulse={w.state === "spinner"}/>
+
                                     </i>}</td>
                                     <td>{w.name}</td>
                                     <td>{w.queues}</td>
@@ -172,20 +172,20 @@ export default class Status extends Component {
                             <h3>Jobs on <strong className={this.state.queue === 'failed' ? 'text-danger' : ''}>
                                 {this.state.queue}</strong></h3>
                         </div>
-                        <a href="" id="empty-btn" onClick={e => this.handleCancel(e, 'all')}
+                        <button id="empty-btn" onClick={e => this.handleCancel(e, 'all')}
                            className="btn btn-danger btn-sm" style={{float: 'right'}} data-toggle="tooltip"
                            title="Remove all jobs from this queue (DESTRUCTIVE)" data-html={true}>
-                            <FontAwesomeIcon icon="trash"/> Empty</a>
-                        <a href="" id="compact-btn" onClick={this.handleCompact}
+                            Empty</button>
+                        <button id="compact-btn" onClick={this.handleCompact}
                            className="btn btn-primary btn-sm" style={{float: 'right', marginRight: 8}}
                            data-toggle="tooltip"
                            title="Remove all stale jobs from this queue (non-destructive)">
-                            <FontAwesomeIcon icon="compress"/> Compact</a>
+                            Compact</button>
                         {this.state.queue === 'failed' ?
-                            <a href="" id="requeue-all-btn" className="btn btn-primary btn-sm"
+                            <button id="requeue-all-btn" className="btn btn-primary btn-sm"
                                onClick={e => this.handleRequeue(e, 'all')}
                                style={{float: 'right', marginRight: 8}}>
-                                <FontAwesomeIcon icon="redo"/> Requeue All</a> : ''}
+                                Requeue All</button> : ''}
                         This list below contains all the registered jobs on queue&nbsp;
                         <strong>{this.state.queue}</strong>, sorted by age (oldest on top).
                     </div>
@@ -206,7 +206,7 @@ export default class Status extends Component {
                             {this.state.jobs.map(j =>
                                 <tr data-role="job" data-job-id={j.id} key={j.id}>
                                     <td>
-                                        <FontAwesomeIcon icon="file"/>
+
                                         <span className="description">{j.description}</span>
                                         {j.excInfo ?
                                             <span className="origin">from <strong>{j.origin}</strong></span> : ''}
@@ -218,12 +218,12 @@ export default class Status extends Component {
                                     </td>
                                     <td><span className="creation_date">{j.createdAt}</span></td>
                                     <td className="actions narrow">
-                                        <a href="" onClick={e => this.handleRequeue(e, j.id)}
+                                        <button onClick={e => this.handleRequeue(e, j.id)}
                                            className="btn btn-info btn-sm">
-                                            <FontAwesomeIcon icon="redo"/> Requeue</a>
-                                        <a href={j.id} onClick={e => this.handleCancel(e, j.id)}
+                                            Requeue</button>
+                                        <Link to={j.id} onClick={e => this.handleCancel(e, j.id)}
                                            className="btn btn-warning btn-sm">
-                                            <FontAwesomeIcon icon="trash"/> Cancel</a>
+                                            Cancel</Link>
                                     </td>
                                 </tr>
                             )}

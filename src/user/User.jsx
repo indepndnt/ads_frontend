@@ -10,7 +10,6 @@ export default class User {
         this.callbackVisitor = callbackVisitor;
         this._userData = {first_name: '', last_name: '', email: '', groups: [], create_date: null};
         this.logout = this.logout.bind(this);
-        this.intuitSignIn = this.intuitSignIn.bind(this);
         this.googleSignIn = this.googleSignIn.bind(this);
         this.renderButton = this.renderButton.bind(this);
         this.refreshToken = this.refreshToken.bind(this);
@@ -45,7 +44,12 @@ export default class User {
                 headers: {'X-Requested-With': 'XMLHttpRequest'},
                 credentials: "same-origin",
             })
-                .then((response) => response.json())
+                .then(response => {
+                    if (response.status > 299) {
+                        throw new Error('Failed to validate login with server, please try again in a few minutes.')
+                    }
+                    return response.json();
+                })
                 .then(userData => {
                     this.idProvider = 'intuit';
                     this.userData = userData;
@@ -117,7 +121,7 @@ export default class User {
                         .then(response => {
                             console.log('refreshed google token', response);
                             if (response.status > 299) {
-                                alert('Login expired and refresh failed. Try logging in again.')
+                                alert('Login expired and refresh failed. Please try logging in again.')
                             }
                         });
                 })
@@ -136,16 +140,17 @@ export default class User {
         })
             .then((response) => {
                 if (response.status !== 204) {
-                    throw new Error('Server sign-out failed');
+                    throw new Error('Server sign-out failed, already signed out.');
                 }
-                this.callbackVisitor('Successfully logged out.');
             })
             .catch(error => {
                 console.log(error);
                 if (this.googleUserInstance) {
                     this.googleUserInstance.disconnect();
                 }
-                this.callbackVisitor(error.message);
+            })
+            .finally(() => {
+                this.callbackVisitor('Successfully logged out.');
             });
 
         if (this.idProvider === 'google') {
@@ -154,27 +159,6 @@ export default class User {
             console.log('logged out from intuit');
         }
         this.idProvider = '';
-    }
-
-    intuitSignIn() {
-        this.idProvider = 'intuit';
-        fetch('/api/intuit-sso', {
-            method: 'POST',
-            headers: {'X-Requested-With': 'XMLHttpRequest'},
-            credentials: "same-origin",
-        })
-            .then((response) => response.text())
-            .then(url => {
-                if (url.substring(0, 4) === 'http') {
-                    window.location = url;
-                } else {
-                    throw new Error('Intuit sign-in failed! (' + url + ')');
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                this.callbackVisitor(error.message);
-            });
     }
 
     googleSignIn() {

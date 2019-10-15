@@ -1,13 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
-import App from './App';
-// Excluding service worker because I want this to be a web page and allow API calls to subfolders.
-// React should only respond when the root index is requested (e.g. https://www.accountingdatasolutions.com/index.html)
-// import registerServiceWorker from './registerServiceWorker';
-import { unregister } from './registerServiceWorker';
-unregister();
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { applyMiddleware, createStore } from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { unregister } from "./registerServiceWorker";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import "react-app-polyfill/ie9";
+import "react-app-polyfill/stable";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import App from "./App";
+import root from "./store/reducers/root";
+
+const store = createStore(root, composeWithDevTools(applyMiddleware(thunk)));
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
+
 // registerServiceWorker();
+unregister();

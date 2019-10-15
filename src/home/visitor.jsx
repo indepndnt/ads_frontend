@@ -1,32 +1,27 @@
-import React, {Component} from "react";
-import Header from "../base/Header";
-import Section from "../service/section";
-import MailingList from "./mailingList";
-import img01 from "./01.jpg";
-import img02 from "./02.jpg";
-import img03 from "./03.jpg";
+import React from "react";
 import { Link } from 'react-router-dom';
+import Header from "../base/Header";
+import Section from "./section";
+import img01 from "./01.jpg";
+import img03 from "./03.jpg";
 
-export default class Visitor extends Component {
-    render() {
-        return (
-            <React.Fragment>
-                <Header
-                    heading={<h2 className="masthead-heading mb-0">EDI Compliance Made Simple</h2>}
-                    tagLine={<p>The EDI solution for your small business. We bring the simplicity to retail
-                        trading.</p>}
-                    button={<Link className="btn btn-primary btn-xl rounded-pill mt-5" to={'/service'}>Learn More</Link>}
-                />
-                <MailingList/>
-                <Section key="1" image={img02} swap="true" heading="Save your time for the important things"
-                         text="We'll take care of making sure your orders get to the warehouse."/>
-                <Section key="2" image={img01} swap="false" heading="Robotic Process Automation"
-                         text="means there's no such thing as &quot;can't&quot;"/>
-                <Section key="3" image={img03} swap="true" heading="Live shipment tracking"
-                         text="right in your QuickBooks Online Invoice" button={
-                             <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-lg rounded-pill mt-5">
-                                 Learn More</a>}/>
-            </React.Fragment>
-        )
-    }
-}
+const Visitor = (props) => {
+    return (
+        <React.Fragment>
+            <Header heading="Invoice Logistics"/>
+            <p className="text-center text-danger">{props.message}</p>
+            <Section key="1" image={img01} swap="false" heading="Free Invoice Upload"
+                     text="Free app to upload invoices to QuickBooks Online!" button={
+                <Link to="/get_app" className="btn btn-lg rounded-pill mt-5 intuitGetApp">
+                    Get App Now!
+                </Link>
+            }/>
+            <Section key="2" image={img03} swap="true" heading="Live shipment tracking"
+                     text="right in your QuickBooks Online Invoice" button={
+                <a href="https://kck.st/2vZ4FrQ" className="btn btn-primary btn-lg rounded-pill mt-5">
+                    Learn More</a>}/>
+        </React.Fragment>
+    )
+};
+
+export default Visitor;

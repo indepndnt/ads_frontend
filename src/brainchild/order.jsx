@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {PieChart, Pie, Tooltip, Cell} from "recharts";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 /*global AbortController*/
 
 export default class Order extends Component {
@@ -105,13 +104,13 @@ export default class Order extends Component {
                 <div className="col">
                     <div className="row align-items-center">
                         <div className="col-6">
-                            {this.props.date} <FontAwesomeIcon icon="inbox"/> {this.state.orderText}
+                            {this.props.date} {this.state.orderText}
                         </div>
                         <div className="col-6 justify-content-end">
-                            <a href="" className="badge badge-pill badge-success"
-                               onClick={this.setStatusChart}>Refresh</a>
-                            <a href="" className="badge badge-pill badge-success"
-                               onClick={this.toggleDetail}>Detail</a>
+                            <button className="badge badge-pill badge-success"
+                               onClick={this.setStatusChart}>Refresh</button>
+                            <button className="badge badge-pill badge-success"
+                               onClick={this.toggleDetail}>Detail</button>
                             <a href={"/api/brainchild/export?date=" + this.props.date}
                                className="badge badge-pill badge-success" download>Download</a>
                         </div>

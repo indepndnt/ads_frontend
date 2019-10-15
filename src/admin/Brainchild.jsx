@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import TaskList from './tasks';
-import Modal from 'react-bootstrap4-modal';
+// import Modal from 'react-bootstrap4-modal';
 
 export default class Brainchild extends Component {
     constructor(props) {
@@ -34,8 +34,8 @@ export default class Brainchild extends Component {
         return (
             <React.Fragment>
                 <TaskList taskHandler={this.handleTask}/>
-                <Modal visible={this.state.showStatus} onClickBackdrop={this.closeModal}
-                       dialogClassName="modal-dialog-centered">
+                {/*<Modal visible={this.state.showStatus} onClickBackdrop={this.closeModal}*/}
+                {/*       dialogClassName="modal-dialog-centered">*/}
                     <div className="modal-header">
                         <h5 className="modal-title">Task Run</h5>
                     </div>
@@ -45,7 +45,6 @@ export default class Brainchild extends Component {
                     <div className="modal-footer">
                         <button type="button" className="btn btn-primary" onClick={this.closeModal}>OK</button>
                     </div>
-                </Modal>
             </React.Fragment>
         )
     }

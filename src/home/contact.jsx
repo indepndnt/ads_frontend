@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Header from "../base/Header";
 import { Redirect } from "react-router-dom";
 
-export default class About extends Component {
+export default class Contact extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -49,7 +49,8 @@ export default class About extends Component {
                     <div className="box justify-content-center">
                         <h2 className="modal-title text-center">Sorry!</h2>
                         <p>Something went wrong and we were not able to send your message.
-                            Please try emailing contact@accountingdatasolutions.com.</p>
+                            Please try emailing <a href="mailto:contact@accountingdatasolutions.com">
+                                contact@accountingdatasolutions.com</a>.</p>
                         <hr/>
                     </div>
                 )
@@ -60,22 +61,14 @@ export default class About extends Component {
     render() {
         return (
             <React.Fragment>
-                <Header heading={<h2 className="masthead-heading mb-0">About Us</h2>}
-                        tagLine={<React.Fragment>
-                            <p>We are specialists in streamlining the flow of accounting
-                                information through the intelligent application of automation and process
-                                improvement.</p>
-                            <p>Think about your most time-consuming, manual process. Then, when
-                                you're ready to talk about how we can put your data to work for you, use the form below
-                                to start the conversation!</p>
-                        </React.Fragment>}/>
+                <Header heading="Contact Us"/>
                 <div className="container">
                     {this.state.content}
                     <form id="contactForm" className="form-group" onSubmit={this.handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="name">Name</label>
                             <input type="text" className="form-control" name="visitor" id="visitor" required
-                                   value={this.state.visitor_name} onChange={this.handleChange}/>
+                                   value={this.state.visitor} onChange={this.handleChange}/>
                         </div>
                         <div className="form-group">
                             <label htmlFor="email">Email Address</label>

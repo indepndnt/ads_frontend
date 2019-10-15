@@ -73,8 +73,6 @@ header.masthead {
   overflow: hidden;
   padding-top: calc(7rem + 72px);
   padding-bottom: 7rem;
-    background: url('base/andrew-welch-77146.jpg') no-repeat scroll center center;
-    background-size: cover;
 }
 
 header.masthead .masthead-content {
@@ -133,4 +131,17 @@ header.masthead .masthead-content .masthead-subheading {
 
 .btn-secondary:focus {
   box-shadow: 0 0 0 0.2rem rgba(244, 123, 48, 0.5);
+}
+
+a.intuitGetApp {
+  background-image: url("home/C2QB_green_btn_lg_default.png");
+  display: block;
+  margin: 0 auto;
+  text-indent: -9999px;
+  background-size: 275px 48px;
+  width: 275px;
+}
+
+a.intuitGetApp:hover {
+  background-image: url("home/C2QB_green_btn_lg_hover.png");
 }

@@ -156,7 +156,7 @@ export default class Users extends Component {
                             {accountList.map((acct) => {
                                 return (
                                     <li key={acct[1]}>
-                                        <a href="" onClick={(e) => this.onUserClick(e, acct[1])}>{acct[0]}</a>
+                                        <button onClick={(e) => this.onUserClick(e, acct[1])}>{acct[0]}</button>
                                     </li>
                                 )
                             })}
