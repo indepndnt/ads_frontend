@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Landing from "./content/Landing";
 import GetApp from "./invoice_app/GetApp";
 import Callback from "./invoice_app/IntuitCallback";
+import Launch from "./invoice_app/Launch";
 import EULA from "./content/EULA";
 import PrivacyPolicy from "./content/PrivacyPolicy";
 import Contact from "./content/Contact";
@@ -21,6 +22,14 @@ class App extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     const dest = this.props.redirect;
     const history = useHistory();
+
+    if (!prevProps.receivedToken && this.props.receivedToken === true) {
+      localStorage.setItem("token", this.props.login_token);
+      localStorage.setItem("expires_at", this.props.expires_at);
+      this.props.completeLogin();
+      history.push("/app");
+    }
+
     if (!prevProps.redirect && !!dest) {
       if (dest.slice(0, 4) === "http") window.location = dest;
       else history.push(dest);
@@ -38,7 +47,8 @@ class App extends React.Component {
             <Route path="/brainchild" component={Brainchild} />
             <Route path="/admin" component={Admin} />
 
-            <Route path="/launch" />
+            <Route path="/app" />
+            <Route path="/launch" render={() => <Launch {...this.props} />}/>
             <Route path="/disconnect" />
             <Route
               path="/intuit_callback"
@@ -66,6 +76,8 @@ const mapActionsToProps = {
   intuitGetApp: api.intuitGetApp,
   intuitCallback: api.intuitCallback,
   intuitLogout: action.intuitLogout,
+  completeLogin: action.completeLogin,
+  reconstituteTokens: action.reconstituteTokens,
 };
 
 const VisibleApp = connect(

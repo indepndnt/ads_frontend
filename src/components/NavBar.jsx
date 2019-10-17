@@ -20,7 +20,7 @@ import intuit_button from "./intuit-sign-in.png";
 const NavBarComponent = props => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
-  const { links, intuitLogin, intuitLogout, loginLoading, loginError, user } = props;
+  const { links, intuitLogin, intuitLogout, loginLoading, loginError, login_token } = props;
 
   return (
     <Navbar dark expand="lg">
@@ -40,7 +40,7 @@ const NavBarComponent = props => {
         </Nav>
       </Collapse>
       <Nav id="loginButton">
-        {user ? (
+        {!!login_token ? (
           <NavItem>
             <NavLink tag={Link} to="/" onClick={intuitLogout}>Sign out</NavLink>
           </NavItem>

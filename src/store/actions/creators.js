@@ -41,7 +41,7 @@ export function intuitCallbackRequest() {
 }
 
 export function intuitCallbackSuccess(payload) {
-  return { type: act.INTUIT_CALLBACK_SUCCESS, payload };
+  return { type: act.RECEIVE_LOGIN_TOKEN, payload };
 }
 
 export function intuitCallbackFailure(message) {
@@ -50,4 +50,12 @@ export function intuitCallbackFailure(message) {
 
 export function intuitLogout() {
   return { type: act.INTUIT_LOGOUT };
+}
+
+export function completeLogin() {
+  return { type: act.LOGIN_COMPLETED };
+}
+
+export function reconstituteTokens(token, expires_at) {
+  return { type: act.RECONSTITUTE_TOKENS, payload: { token, expires_at } };
 }

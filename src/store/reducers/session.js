@@ -77,12 +77,16 @@ const session = (
         callbackError: null
       };
       break;
-    case act.INTUIT_CALLBACK_SUCCESS:
+    case act.RECEIVE_LOGIN_TOKEN:
+      const { token, expires_in } = action.payload.login_token;
+      let expires_at = new Date();
+      expires_at.setSeconds(expires_at.getSeconds() + expires_in - 30);
       state = {
         ...state,
         ...action.payload,
-        redirect: "/launch",
-        user: action.payload.given_name + " " + action.payload.family_name
+        login_token: token,
+        expires_at,
+        receivedToken: true
       };
       break;
     case act.INTUIT_CALLBACK_FAILURE:
@@ -97,6 +101,12 @@ const session = (
         links: [],
         loginLoading: false,
         getappLoading: false
+      };
+      break;
+    case act.RECONSTITUTE_TOKENS:
+      state = {
+        ...state,
+        ...action.payload
       };
       break;
     default:
