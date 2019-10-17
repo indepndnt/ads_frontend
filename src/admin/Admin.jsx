@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import classnames from "classnames";
-import Header from "../base/Header";
+import Header from "../components/Header";
 import Status from "./Status";
 import Brainchild from "./Brainchild";
 import Users from "./Users";

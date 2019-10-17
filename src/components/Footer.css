@@ -1,0 +1,13 @@
+footer {
+    background: black;
+    padding: 48px;
+}
+
+footer > p {
+    text-align: center;
+    margin: 0;
+}
+
+footer > p.text-white {
+    font-size: 0.8rem;
+}

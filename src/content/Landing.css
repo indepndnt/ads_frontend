@@ -1,0 +1,16 @@
+.rounded-pill {
+  border-radius: 5rem;
+}
+
+a.intuitGetApp {
+  background-image: url("C2QB_green_btn_lg_default.png");
+  display: block;
+  margin: 0 auto;
+  text-indent: -9999px;
+  background-size: 275px 48px;
+  width: 275px;
+}
+
+a.intuitGetApp:hover {
+  background-image: url("C2QB_green_btn_lg_hover.png");
+}

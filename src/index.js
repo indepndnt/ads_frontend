@@ -9,6 +9,7 @@ import { unregister } from "./registerServiceWorker";
 import "react-app-polyfill/ie9";
 import "react-app-polyfill/stable";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
 
 import App from "./App";
 import root from "./store/reducers/root";

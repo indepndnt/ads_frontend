@@ -1,0 +1,12 @@
+header {
+  position: relative;
+  overflow: hidden;
+  padding-top: 48px;
+  padding-bottom: 16px;
+  text-align: center;
+}
+
+header > * {
+  z-index: 1;
+  position: relative;
+}
