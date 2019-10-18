@@ -2,9 +2,7 @@ import * as act from "../actions/types";
 
 const session = (
   state = {
-    links: [],
-    loginLoading: false,
-    getappLoading: false
+    links: []
   },
   action
 ) => {
@@ -69,6 +67,28 @@ const session = (
         getappError: action.payload
       };
       break;
+    case act.INTUIT_DISCONNECT_REQUEST:
+      state = {
+        ...state,
+        disconnectLoading: true,
+        disconnectError: null,
+        intuitDisconnected: false
+      };
+      break;
+    case act.INTUIT_DISCONNECT_SUCCESS:
+      state = {
+        ...state,
+        disconnectLoading: false,
+        intuitDisconnected: true
+      };
+      break;
+    case act.INTUIT_DISCONNECT_FAILURE:
+      state = {
+        ...state,
+        disconnectLoading: false,
+        disconnectError: action.payload
+      };
+      break;
     case act.INTUIT_CALLBACK_REQUEST:
       state = {
         ...state,
@@ -102,6 +122,24 @@ const session = (
         loginLoading: false,
         getappLoading: false
       };
+      break;
+    case act.LOGIN_COMPLETED:
+      let slimState = {};
+      for (let [key, value] of Object.entries(state)) {
+        if ([
+          "receivedToken",
+          "loginLoading",
+          "loginError",
+          "getappLoading",
+          "getappError",
+          "callbackLoading",
+          "callbackError",
+          "redirect",
+        ].indexOf(key)) {
+          slimState[key] = value;
+        }
+      }
+      state = slimState;
       break;
     case act.RECONSTITUTE_TOKENS:
       state = {

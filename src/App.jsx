@@ -5,12 +5,18 @@ import * as api from "./store/actions/apiV1";
 import * as oldapi from "./store/actions/apiLegacy";
 import "./App.css";
 import NavBar from "./components/NavBar";
-import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory
+} from "react-router-dom";
 import Footer from "./components/Footer";
 import Landing from "./content/Landing";
 import GetApp from "./invoice_app/GetApp";
 import Callback from "./invoice_app/IntuitCallback";
 import Launch from "./invoice_app/Launch";
+import Disconnect from "./invoice_app/Disconnect";
 import EULA from "./content/EULA";
 import PrivacyPolicy from "./content/PrivacyPolicy";
 import Contact from "./content/Contact";
@@ -48,8 +54,8 @@ class App extends React.Component {
             <Route path="/admin" component={Admin} />
 
             <Route path="/app" />
-            <Route path="/launch" render={() => <Launch {...this.props} />}/>
-            <Route path="/disconnect" />
+            <Route path="/launch" render={() => <Launch {...this.props} />} />
+            <Route path="/disconnect" render={() => <Disconnect {...this.props} />}/>
             <Route
               path="/intuit_callback"
               render={() => <Callback {...this.props} />}
@@ -76,8 +82,9 @@ const mapActionsToProps = {
   intuitGetApp: api.intuitGetApp,
   intuitCallback: api.intuitCallback,
   intuitLogout: action.intuitLogout,
+  intuitDisconnect: api.intuitDisconnect,
   completeLogin: action.completeLogin,
-  reconstituteTokens: action.reconstituteTokens,
+  reconstituteTokens: action.reconstituteTokens
 };
 
 const VisibleApp = connect(

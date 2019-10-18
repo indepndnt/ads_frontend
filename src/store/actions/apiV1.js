@@ -30,13 +30,29 @@ export function intuitCallback(params) {
     fetch("/api/v1/token", {
       method: "POST",
       body: JSON.stringify(params),
-      headers: {"content-type": "application/json"}
+      headers: { "content-type": "application/json" }
     })
-        .then(responseToJsonWithErrorHandling)
-        .then(payload => dispatch(act.intuitCallbackSuccess(payload)))
-        .catch(err => {
-          dispatch(act.intuitCallbackFailure(err.message));
-        });
+      .then(responseToJsonWithErrorHandling)
+      .then(payload => dispatch(act.intuitCallbackSuccess(payload)))
+      .catch(err => {
+        dispatch(act.intuitCallbackFailure(err.message));
+      });
+  };
+}
+
+export function intuitDisconnect() {
+  return dispatch => {
+    dispatch(act.intuitDisconnectRequest());
+    fetch("/api/v1/token", {
+      method: "DELETE"
+    })
+      .then(response => {
+        if (response.ok) dispatch(act.intuitDisconnectSuccess());
+        else throw new Error(response.statusText);
+      })
+      .catch(err => {
+        dispatch(act.intuitDisconnectFailure(err.message));
+      });
   };
 }
 

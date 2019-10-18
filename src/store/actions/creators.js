@@ -48,6 +48,18 @@ export function intuitCallbackFailure(message) {
   return { type: act.INTUIT_CALLBACK_FAILURE, payload: message };
 }
 
+export function intuitDisconnectRequest() {
+  return { type: act.INTUIT_DISCONNECT_REQUEST };
+}
+
+export function intuitDisconnectSuccess() {
+  return { type: act.INTUIT_DISCONNECT_SUCCESS };
+}
+
+export function intuitDisconnectFailure(message) {
+  return { type: act.INTUIT_DISCONNECT_FAILURE, payload: message };
+}
+
 export function intuitLogout() {
   return { type: act.INTUIT_LOGOUT };
 }
