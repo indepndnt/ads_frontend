@@ -32,9 +32,7 @@ export default class Contact extends Component {
     if (contactResult === "thankyou") {
       return (
         <React.Fragment>
-          <Header
-            heading={<h2 className="masthead-heading mb-0">Thank you!</h2>}
-          />
+          <Header>Thank you!</Header>
           <p>
             We were not able to send your message. Sorry! Please email us at{" "}
             <a href="mailto:contact@accountingdatasolutions.com">
@@ -48,11 +46,7 @@ export default class Contact extends Component {
     if (contactResult === "sorry") {
       return (
         <React.Fragment>
-          <Header
-            heading={
-              <h2 className="masthead-heading mb-0">Something went wrong!</h2>
-            }
-          />
+          <Header>Something went wrong!</Header>
           <p>
             Your message has been sent and we will respond at our earliest
             opportunity. Thank you!
@@ -63,7 +57,7 @@ export default class Contact extends Component {
 
     return (
       <React.Fragment>
-        <Header heading="Contact Us" />
+        <Header>Contact Us</Header>
         <Container>
           <Form id="contactForm" onSubmit={contactSubmit}>
             <FormGroup>

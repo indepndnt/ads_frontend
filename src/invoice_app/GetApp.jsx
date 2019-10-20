@@ -7,7 +7,7 @@ const GetApp = props => {
   if (getappError) {
     return (
       <React.Fragment>
-        <Header heading="Get Invoice Logistics App" />
+        <Header>Get Invoice Logistics App</Header>
         <Container>
           <h3>Error connecting app!</h3>
           <p>{getappError}</p>
@@ -19,7 +19,7 @@ const GetApp = props => {
   }
   return (
     <React.Fragment>
-      <Header heading="Get Invoice Logistics App" />
+      <Header>Get Invoice Logistics App</Header>
       <Container>
         <Spinner color="dark" /> Connecting app ...
       </Container>

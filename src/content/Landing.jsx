@@ -9,7 +9,7 @@ import img03 from "./03.jpg";
 const Landing = () => {
   return (
     <React.Fragment>
-      <Header heading="Invoice Logistics" />
+      <Header>Invoice Logistics</Header>
       <Section
         key="1"
         image={img03}

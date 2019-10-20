@@ -4,7 +4,7 @@ import Header from "../components/Header";
 const EULA = () => {
     return (
         <div className="container">
-            <Header heading="End-User License Agreement"/>
+            <Header>End-User License Agreement</Header>
             <div className="section" id="end-user-license-agreement">
 
                 <div className="section" id="end-user-license-agreement-for-accounting-data-solutions-apps">

@@ -4,7 +4,7 @@ import Header from '../components/Header';
 const PrivacyPolicy = () => {
     return (
         <div className="container">
-            <Header heading="Privacy Policy" />
+            <Header>Privacy Policy</Header>
             <div className="section" id="privacy-policy">
                 <div className="section" id="id1">
                     <h2>Privacy Policy</h2>

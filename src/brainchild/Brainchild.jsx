@@ -12,7 +12,7 @@ const Brainchild = props => {
   };
   return (
     <React.Fragment>
-      <Header heading="Brainchild" />
+      <Header>Brainchild</Header>
       <Nav tabs>
         <NavItem>
           <NavLink

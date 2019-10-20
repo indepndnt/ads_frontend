@@ -53,7 +53,7 @@ export default class Finance extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header heading="Finance" />
+        <Header>Finance</Header>
         <div className="container">
           <div className="row">
             <div className="col-4">

@@ -71,3 +71,27 @@ export function completeLogin() {
 export function reconstituteTokens(token, expires_at) {
   return { type: act.RECONSTITUTE_TOKENS, payload: { token, expires_at } };
 }
+
+export function companyInfoRequest() {
+  return { type: act.GET_COMPANY_INFO_REQUEST };
+}
+
+export function companyInfoSuccess(payload) {
+  return { type: act.GET_COMPANY_INFO_SUCCESS, payload };
+}
+
+export function companyInfoFailure(message) {
+  return { type: act.GET_COMPANY_INFO_FAILURE, payload: message };
+}
+
+export function uploadInvoicesRequest() {
+  return { type: act.UPLOAD_INVOICES_REQUEST };
+}
+
+export function uploadInvoicesSuccess(payload) {
+  return { type: act.UPLOAD_INVOICES_SUCCESS, payload };
+}
+
+export function uploadInvoicesFailure(message) {
+  return { type: act.UPLOAD_INVOICES_FAILURE, payload: message };
+}

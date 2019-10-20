@@ -1,38 +1,43 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import Header from "../components/Header";
-import { Container, Spinner } from "reactstrap";
+import React, {useState} from 'react';
+import {useLocation, Redirect} from 'react-router-dom';
+import Header from '../components/Header';
+import {Container, Spinner} from 'reactstrap';
 
 const Callback = props => {
-  const query = new URLSearchParams(useLocation().search);
-  const { intuitCallback, callbackLoading, callbackError } = props;
+    const [isLoading, setIsLoading] = useState(false);
+    const query = new URLSearchParams(useLocation().search);
+    const {intuitCallback, receivedToken, callbackError} = props;
 
-  if (callbackError) {
-    return (
-      <React.Fragment>
-        <Header heading="Launch Invoice Logistics App" />
-        <Container>
-          <h3>Error connecting app!</h3>
-          <p>{callbackError}</p>
-        </Container>
-      </React.Fragment>
-    );
-  } else if (!callbackLoading) {
-    let result = {};
-    for (let entry of query) {
-      const [key, value] = entry;
-      result[key] = value;
+    if (!isLoading && !receivedToken) {
+        setIsLoading(true);
+        let result = {};
+        for (let entry of query) {
+            const [key, value] = entry;
+            result[key] = value;
+        }
+        intuitCallback(result);
     }
-    intuitCallback(result);
-  }
-  return (
-    <React.Fragment>
-      <Header heading="Launch Invoice Logistics App" />
-      <Container>
-        <Spinner color="dark" /> Launching app ...
-      </Container>
-    </React.Fragment>
-  );
+
+    if (!!receivedToken) {
+        setIsLoading(false);
+        return <Redirect to='/app' />;
+    }
+
+    return (
+        <React.Fragment>
+            <Header>Launch Invoice Logistics App</Header>
+            {callbackError ? (
+                <Container>
+                    <h3>Error connecting app!</h3>
+                    <p>{callbackError}</p>
+                </Container>
+            ) : (
+                <Container>
+                    <Spinner color='dark' /> Launching app ...
+                </Container>
+            )}
+        </React.Fragment>
+    );
 };
 
 export default Callback;

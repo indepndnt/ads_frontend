@@ -3,7 +3,7 @@ import "./Header.css";
 
 const Header = props => (
   <header>
-    <h2>{props.heading}</h2>
+    <h2>{props.children}</h2>
   </header>
 );
 
