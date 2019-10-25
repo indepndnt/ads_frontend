@@ -1,15 +1,76 @@
-import React from 'react';
-import {Col, Row} from 'reactstrap';
-import {Link} from 'react-router-dom';
+import React, {useState} from 'react';
+import {Col, Row, Form, FormGroup, Label, Input, Button} from 'reactstrap';
+import {useHistory, Link} from 'react-router-dom';
 
-const AppSettings = () => {
+const AppSettings = props => {
+    let history = useHistory();
+    const {realm_id, company_name, companies, switchCompany} = props;
+    let switchCompanySection;
+
+    const [newRealmId, setNewRealmId] = useState(realm_id);
+    const addVal = '000000';
+    const handleSelect = event => {
+        setNewRealmId(event.target.value);
+    };
+    const handleSubmit = () => {
+        if (newRealmId === addVal) {
+            history.push('/get-app');
+        } else {
+            switchCompany(newRealmId, companies[newRealmId]);
+        }
+    };
+
+    if (Object.keys(companies).length > 1) {
+        switchCompanySection = (
+            <Row>
+                <Col>
+                    <Form inline tag='span'>
+                        <FormGroup className='mr-sm-2'>
+                            <Label for='companySelect' className='mr-sm-2'>
+                                Switch to
+                            </Label>
+                            <Input
+                                type='select'
+                                name='select'
+                                id='companySelect'
+                                onChange={handleSelect}
+                                value={newRealmId}>
+                                {Object.entries(companies).map(([key, value]) => (
+                                    <option key={key} value={key}>
+                                        {value}
+                                    </option>
+                                ))}
+                                <option value={addVal}>Add another company not listed.</option>
+                            </Input>
+                        </FormGroup>
+                        <Button color='primary' onClick={handleSubmit}>
+                            Go
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        );
+    }
+
     return (
         <Row>
             <Col>
-                <hr />
-                <p>
-                    <Link to='/disconnect'>Disconnect</Link> your company from the app.
-                </p>
+                <Row>
+                    <Col>
+                        To add another company, navigate to <Link to='/get-app'> Get App </Link> again.
+                    </Col>
+                </Row>
+                {switchCompanySection}
+                {!!realm_id ? (
+                    <Row>
+                        <Col>
+                            <Link to='/disconnect'>
+                                Disconnect <strong> {company_name} </strong>
+                            </Link>
+                            from the app.
+                        </Col>
+                    </Row>
+                ) : null}
             </Col>
         </Row>
     );

@@ -1,92 +1,79 @@
 import * as act from './creators';
 import axios from 'axios';
 
-axios.interceptors.request.use(request => {
-    const token = localStorage.getItem('token');
-    const expires_at = localStorage.getItem('expires_at');
-    if (new Date() < expires_at) {
-        request.headers['Authorization'] = 'Bearer ' + token;
-    }
-});
-
 export function intuitLogin() {
     return dispatch => {
         dispatch(act.intuitLoginRequest());
-        fetch('/api/v1/start')
-            .then(responseToJsonWithErrorHandling)
-            .then(payload => dispatch(act.intuitLoginSuccess(payload)))
-            .catch(err => {
-                dispatch(act.intuitLoginFailure(err.message));
-            });
+        axios
+            .get('/api/v1/start')
+            .then(response => dispatch(act.intuitLoginSuccess(response.data)))
+            .catch(err => dispatch(act.intuitLoginFailure(err.message)));
     };
 }
 
 export function intuitGetApp() {
     return dispatch => {
         dispatch(act.intuitGetAppRequest());
-        fetch('/api/v1/start?get_app=true')
-            .then(responseToJsonWithErrorHandling)
-            .then(payload => dispatch(act.intuitGetAppSuccess(payload)))
-            .catch(err => {
-                dispatch(act.intuitGetAppFailure(err.message));
-            });
+        axios
+            .get('/api/v1/start', {params: {get_app: true}})
+            .then(response => dispatch(act.intuitGetAppSuccess(response.data)))
+            .catch(err => dispatch(act.intuitGetAppFailure(err.message)));
     };
 }
 
-export function intuitCallback(params) {
+export function intuitCallback(data) {
     return dispatch => {
         dispatch(act.intuitCallbackRequest());
-        fetch('/api/v1/token', {
-            method: 'POST',
-            body: JSON.stringify(params),
-            headers: {'Content-Type': 'application/json'},
-        })
-            .then(responseToJsonWithErrorHandling)
-            .then(payload => dispatch(act.intuitCallbackSuccess(payload)))
-            .catch(err => {
-                dispatch(act.intuitCallbackFailure(err.message));
-            });
+        axios
+            .post('/api/v1/token', data)
+            .then(response => dispatch(act.intuitCallbackSuccess(response.data)))
+            .catch(err => dispatch(act.intuitCallbackFailure(err.message)));
     };
 }
 
 export function intuitDisconnect() {
-    return dispatch => {
+    return (dispatch, getState) => {
+        const {realm_id, login_token} = getState().user;
         dispatch(act.intuitDisconnectRequest());
-        fetch('/api/v1/token', {
-            method: 'DELETE',
-            headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
-        })
-            .then(response => {
-                if (response.ok) dispatch(act.intuitDisconnectSuccess());
-                else throw new Error(response.statusText);
-            })
-            .catch(err => {
-                dispatch(act.intuitDisconnectFailure(err.message));
-            });
+        axios
+            .delete('/api/v1/token', {params: {realm_id}, headers: {Authorization: 'Bearer ' + login_token}})
+            .then(() => dispatch(act.intuitDisconnectSuccess()))
+            .catch(err => dispatch(act.intuitDisconnectFailure(err.message)));
     };
 }
 
 export function intuitGetCompanyInfo() {
-    return dispatch => {
+    return (dispatch, getState) => {
+        const {realm_id, login_token} = getState().user;
         dispatch(act.companyInfoRequest());
-        fetch('/api/v1/company-info', {
-            headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
-        })
-            .then(responseToJsonWithErrorHandling)
-            .then(payload => dispatch(act.companyInfoSuccess(payload)))
-            .catch(err => {
-                dispatch(act.companyInfoFailure(err.message));
-            });
+        axios
+            .get('/api/v1/company-info', {params: {realm_id}, headers: {Authorization: 'Bearer ' + login_token}})
+            .then(response => dispatch(act.companyInfoSuccess(response.data)))
+            .catch(err => dispatch(act.companyInfoFailure(err.message)));
+    };
+}
+
+export function intuitRefreshUserInfo() {
+    return (dispatch, getState) => {
+        const {login_token} = getState().user;
+        dispatch(act.userInfoRequest());
+        axios
+            .get('/api/v1/user', {headers: {Authorization: 'Bearer ' + login_token}})
+            .then(response => dispatch(act.userInfoSuccess(response.data)))
+            .catch(err => dispatch(act.userInfoFailure(err.message)));
     };
 }
 
 export function intuitUploadInvoices(file, onProgress) {
-    return dispatch => {
+    return (dispatch, getState) => {
+        const {realm_id, login_token} = getState().user;
         dispatch(act.uploadInvoicesRequest());
         const data = new FormData();
         data.append('file', file);
         axios
             .post('/api/v1/invoices', data, {
+                params: {realm_id},
+                headers: {Authorization: 'Bearer ' + login_token},
                 onUploadProgress: onProgress,
             })
             .then(response => {
@@ -98,27 +85,4 @@ export function intuitUploadInvoices(file, onProgress) {
                 dispatch(act.uploadInvoicesFailure(err.message));
             });
     };
-}
-
-export function responseToJsonWithErrorHandling(response) {
-    const contentLength = response.headers.get('content-length');
-    const contentType = response.headers.get('content-type');
-    if (!response.ok) {
-        if (!contentLength) {
-            throw new Error(response.statusText);
-        } else if (contentType && contentType.indexOf('application/json') !== -1) {
-            return response.json().then(data => {
-                let message = data.detail;
-                if (!message) {
-                    message = JSON.stringify(data);
-                }
-                throw new Error(message);
-            });
-        } else {
-            return response.text().then(text => {
-                throw new Error(text);
-            });
-        }
-    }
-    return response.json();
 }

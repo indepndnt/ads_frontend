@@ -19,7 +19,6 @@ const Callback = props => {
     }
 
     if (!!receivedToken) {
-        setIsLoading(false);
         return <Redirect to='/app' />;
     }
 

@@ -23,13 +23,8 @@ import Admin from './admin/Admin';
 import Brainchild from './brainchild/Brainchild';
 
 class App extends React.Component {
+    // TODO: add a timer to renew login token if there's an expires_at
     componentDidUpdate(prevProps, prevState, snapshot) {
-        // remember user's login when it is received
-        if (!prevProps.receivedToken && this.props.receivedToken === true) {
-            localStorage.setItem('token', this.props.login_token);
-            localStorage.setItem('expires_at', this.props.expires_at);
-            this.props.completeLogin();
-        }
         // when an external redirect is set (e.g. to Intuit for login)
         if (!prevProps.redirect && !!this.props.redirect) {
             window.location = this.props.redirect;
@@ -58,22 +53,16 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {...state.session};
+    return {
+        ...state.session,
+        ...state.user,
+    };
 };
 
 const mapActionsToProps = {
-    contactSubmit: oldapi.submitContact,
-
-    intuitLogin: api.intuitLogin,
-    intuitGetApp: api.intuitGetApp,
-    intuitCallback: api.intuitCallback,
-    intuitDisconnect: api.intuitDisconnect,
-    intuitGetCompanyInfo: api.intuitGetCompanyInfo,
-    intuitUploadInvoices: api.intuitUploadInvoices,
-
-    completeLogin: action.completeLogin,
-    reconstituteTokens: action.reconstituteTokens,
-    intuitLogout: action.intuitLogout,
+    ...oldapi,
+    ...api,
+    ...action,
 };
 
 const VisibleApp = connect(

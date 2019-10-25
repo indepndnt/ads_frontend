@@ -32,3 +32,11 @@ li.nav-item > a.nav-link {
 a.nav-link > img {
     cursor: pointer;
 }
+
+div.collapse {
+    flex-direction: row-reverse;
+}
+
+ul.nav {
+    flex-direction: inherit;
+}

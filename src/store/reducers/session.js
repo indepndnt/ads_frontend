@@ -1,9 +1,7 @@
 import * as act from '../actions/types';
 
 const session = (
-    state = {
-        links: [],
-    },
+    state = {},
     action
 ) => {
     switch (action.type) {
@@ -80,6 +78,7 @@ const session = (
                 ...state,
                 disconnectLoading: false,
                 intuitDisconnected: true,
+                loadedUserInfo: false,
             };
             break;
         case act.INTUIT_DISCONNECT_FAILURE:
@@ -97,14 +96,9 @@ const session = (
             };
             break;
         case act.RECEIVE_LOGIN_TOKEN:
-            const {token, expires_in} = action.payload.login_token;
-            let expires_at = new Date();
-            expires_at.setSeconds(expires_at.getSeconds() + expires_in - 30);
             state = {
                 ...state,
                 ...action.payload,
-                login_token: token,
-                expires_at,
                 receivedToken: true,
             };
             break;
@@ -115,36 +109,7 @@ const session = (
             };
             break;
         case act.INTUIT_LOGOUT:
-            state = {
-                links: [],
-                loginLoading: false,
-                getappLoading: false,
-            };
-            break;
-        case act.LOGIN_COMPLETED:
-            let slimState = {};
-            for (let [key, value] of Object.entries(state)) {
-                if (
-                    [
-                        'receivedToken',
-                        'loginLoading',
-                        'loginError',
-                        'getappLoading',
-                        'getappError',
-                        'callbackError',
-                        'redirect',
-                    ].indexOf(key) === -1
-                ) {
-                    slimState[key] = value;
-                }
-            }
-            state = slimState;
-            break;
-        case act.RECONSTITUTE_TOKENS:
-            state = {
-                ...state,
-                ...action.payload,
-            };
+            state = {};
             break;
         case act.GET_COMPANY_INFO_REQUEST:
             state = {
@@ -165,6 +130,29 @@ const session = (
                 ...state,
                 loadingCompanyInfo: false,
                 companyInfo: {error: action.payload},
+            };
+            break;
+        case act.REFRESH_USER_INFO_REQUEST:
+            state = {
+                ...state,
+                loadingUserInfo: true,
+                loadedUserInfo: false,
+                userInfoError: null,
+            };
+            break;
+        case act.REFRESH_USER_INFO_SUCCESS:
+            state = {
+                ...state,
+                loadingUserInfo: false,
+                loadedUserInfo: true,
+            };
+            break;
+        case act.REFRESH_USER_INFO_FAILURE:
+            state = {
+                ...state,
+                loadingUserInfo: false,
+                loadedUserInfo: true,
+                userInfoError: action.payload,
             };
             break;
         case act.UPLOAD_INVOICES_REQUEST:
