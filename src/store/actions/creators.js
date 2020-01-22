@@ -1,17 +1,5 @@
 import * as act from './types';
 
-export function contactRequest() {
-    return {type: act.CONTACT_REQUEST};
-}
-
-export function contactSuccess() {
-    return {type: act.CONTACT_SUCCESS};
-}
-
-export function contactFailure(message) {
-    return {type: act.CONTACT_FAILURE, payload: message};
-}
-
 export function intuitLoginRequest() {
     return {type: act.INTUIT_LOGIN_REQUEST};
 }
@@ -102,4 +90,16 @@ export function uploadInvoicesSuccess(payload) {
 
 export function uploadInvoicesFailure(message) {
     return {type: act.UPLOAD_INVOICES_FAILURE, payload: message};
+}
+
+export function sendContactRequest() {
+    return {type: act.SEND_CONTACT_REQUEST};
+}
+
+export function sendContactSuccess() {
+    return {type: act.SEND_CONTACT_SUCCESS};
+}
+
+export function sendContactFailure(message) {
+    return {type: act.SEND_CONTACT_FAILURE, payload: message};
 }

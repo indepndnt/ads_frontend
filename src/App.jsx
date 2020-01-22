@@ -10,6 +10,7 @@ import Branding from './components/Branding';
 import Landing from './content/Landing';
 import EULA from './content/EULA';
 import PrivacyPolicy from './content/PrivacyPolicy';
+import RequestQuote from './content/RequestQuote';
 import Contact from './content/Contact';
 
 import GetApp from './invoice_app/GetApp';
@@ -46,6 +47,7 @@ class App extends React.Component {
                 <Route path='/get-app' render={() => <GetApp {...this.props} />} />
                 <Route path='/end-user-license-agreement' component={EULA} />
                 <Route path='/privacy-policy' component={PrivacyPolicy} />
+                <Route path='/quote' render={() => <RequestQuote {...this.props} />} />
                 <Route path='/contact' render={() => <Contact {...this.props} />} />
             </Branding>
         );
@@ -65,8 +67,5 @@ const mapActionsToProps = {
     ...action,
 };
 
-const VisibleApp = connect(
-    mapStateToProps,
-    mapActionsToProps
-)(App);
+const VisibleApp = connect(mapStateToProps, mapActionsToProps)(App);
 export default VisibleApp;

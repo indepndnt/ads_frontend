@@ -9,23 +9,17 @@ export default class User {
         this.callbackUser = callbackUser;
         this.callbackVisitor = callbackVisitor;
         this._userData = {first_name: '', last_name: '', email: '', groups: [], create_date: null};
-        this.logout = this.logout.bind(this);
-        this.googleSignIn = this.googleSignIn.bind(this);
-        this.renderButton = this.renderButton.bind(this);
-        this.refreshToken = this.refreshToken.bind(this);
     }
 
     gapiLoadWhenReady(script) {
-        const checkForLoggedInUser = this.checkForLoggedInUser.bind(this);
-        const googleLoginError = this.googleLoginError.bind(this);
         if (script.getAttribute('gapi_processed')) {
             // Load the auth2 instance
-            gapi.load('auth2', function () {
+            gapi.load('auth2', () => {
                 gapi.auth2.init({
                     client_id: '444058961244-j1ceheocuu09gfllsr0omgle5963n32i.apps.googleusercontent.com',
                     // Scopes to request in addition to 'profile' and 'email'
                     //scope: 'additional_scope'
-                }).then(checkForLoggedInUser, googleLoginError);
+                }).then(this.checkForLoggedInUser, this.googleLoginError);
             });
         } else {
             setTimeout(() => {
@@ -34,7 +28,7 @@ export default class User {
         }
     }
 
-    checkForLoggedInUser(googleAuthInstance) {
+    checkForLoggedInUser = googleAuthInstance => {
         // Google API has successfully instantiated here
         if (googleAuthInstance.isSignedIn.get()) {
             this.googleSignIn();
@@ -52,23 +46,25 @@ export default class User {
                 })
                 .then(userData => {
                     this.idProvider = 'intuit';
-                    this.userData = userData;
+                    for (const [key, value] of Object.entries(userData)) {
+                        this._userData[key] = value
+                    }
                 })
                 .then(this.callbackUser)
                 .catch(error => {
                     this.callbackVisitor(error.message);
                 });
         }
-    }
+    };
 
-    googleLoginError(error) {
+    googleLoginError = error => {
         // If an error is raised while initializing (this can happen in old unsupported browsers)
         console.log('Google authentication error:');
         console.log(error);
         this.logout();
-    }
+    };
 
-    renderButton() {
+    renderButton = () => {
         // Render the Google Sign-In button
         gapi.signin2.render('googleSignIn', {
             'scope': 'profile email',
@@ -76,37 +72,11 @@ export default class User {
             'height': 26,
             'theme': 'dark',
             'onsuccess': this.googleSignIn,
-            'onfailure': () => {this.googleLoginError('Sign-in button failure')}
+            'onfailure': (e) => {this.googleLoginError('Sign-in button failure ' + e)}
         });
-    }
+    };
 
-    set userData(data) {
-        for (const [key, value] of Object.entries(data)) {
-            this._userData[key] = value
-        }
-    }
-
-    get groups() {
-        return this._userData.groups;
-    }
-
-    get firstName() {
-        return this._userData.first_name;
-    }
-
-    get lastName() {
-        return this._userData.last_name;
-    }
-
-    get email() {
-        return this._userData.email;
-    }
-
-    get createDate() {
-        return this._userData.create_date;
-    }
-
-    refreshToken() {
+    refreshToken = () => {
         const timeLeft = this.googleUserInstance.getAuthResponse().expires_in;
         console.log('refresh token: auth expires in', timeLeft);
         if (timeLeft < 300) {
@@ -130,9 +100,9 @@ export default class User {
         } else {
             this.googleSignIn();
         }
-    }
+    };
 
-    logout() {
+    logout = () => {
         fetch('/api/session', {
             method: 'DELETE',
             headers: {'X-Requested-With': 'XMLHttpRequest'},
@@ -159,9 +129,9 @@ export default class User {
             console.log('logged out from intuit');
         }
         this.idProvider = '';
-    }
+    };
 
-    googleSignIn() {
+    googleSignIn = () => {
         this.idProvider = 'google';
         const auth2 = gapi.auth2.getAuthInstance();
         this.googleUserInstance = auth2.currentUser.get();

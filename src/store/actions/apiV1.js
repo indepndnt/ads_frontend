@@ -86,3 +86,17 @@ export function intuitUploadInvoices(file, onProgress) {
             });
     };
 }
+
+export function sendContact(data) {
+    return dispatch => {
+        dispatch(act.sendContactRequest());
+        axios
+            .post('/api/v1/contact', data)
+            .then(response => {
+                dispatch(act.sendContactSuccess());
+            })
+            .catch(err => {
+                dispatch(act.sendContactFailure(err.message));
+            });
+    };
+}

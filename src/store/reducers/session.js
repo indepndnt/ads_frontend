@@ -5,19 +5,19 @@ const session = (
     action
 ) => {
     switch (action.type) {
-        case act.CONTACT_REQUEST:
+        case act.SEND_CONTACT_REQUEST:
             state = {
                 ...state,
                 contactResult: 'loading',
             };
             break;
-        case act.CONTACT_SUCCESS:
+        case act.SEND_CONTACT_SUCCESS:
             state = {
                 ...state,
                 contactResult: 'thankyou',
             };
             break;
-        case act.CONTACT_FAILURE:
+        case act.SEND_CONTACT_FAILURE:
             state = {
                 ...state,
                 contactResult: 'sorry',

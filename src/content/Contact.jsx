@@ -19,20 +19,26 @@ export default class Contact extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.props.onSubmit(
-      this.state.visitor,
-      this.state.email,
-      this.state.phone,
-      this.state.message
-    );
+    this.props.sendContact({...this.state, subject: 'Contact Form Submission'});
   };
 
   render() {
-    const {contactSubmit, contactResult} = this.props;
+    const {contactResult} = this.props;
     if (contactResult === "thankyou") {
       return (
         <React.Fragment>
           <Header>Thank you!</Header>
+          <p>
+            Your message has been sent and we will respond at our earliest
+            opportunity. Thank you!
+          </p>
+        </React.Fragment>
+      );
+    }
+    if (contactResult === "sorry") {
+      return (
+        <React.Fragment>
+          <Header>Something went wrong!</Header>
           <p>
             We were not able to send your message. Sorry! Please email us at{" "}
             <a href="mailto:contact@accountingdatasolutions.com">
@@ -43,23 +49,12 @@ export default class Contact extends Component {
         </React.Fragment>
       );
     }
-    if (contactResult === "sorry") {
-      return (
-        <React.Fragment>
-          <Header>Something went wrong!</Header>
-          <p>
-            Your message has been sent and we will respond at our earliest
-            opportunity. Thank you!
-          </p>
-        </React.Fragment>
-      );
-    }
 
     return (
       <React.Fragment>
         <Header>Contact Us</Header>
         <Container>
-          <Form id="contactForm" onSubmit={contactSubmit}>
+          <Form id="contactForm" onSubmit={this.handleSubmit}>
             <FormGroup>
               <Label for="name">Name</Label>
               <Input
