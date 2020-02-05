@@ -19,13 +19,13 @@ export default class Finance extends Component {
     script.onload = () => {
       this.gapiLoadWhenReady(script);
     };
+    script.id = 'google-api-js';
     script.src = 'https://apis.google.com/js/platform.js';
     document.body.appendChild(script);
-    this.renderGoogleButton();
   }
 
   renderGoogleButton = () => {
-    if (this.ref.current) {
+    if (!!gapi && this.ref.current) {
       gapi.signin2.render('googleSignIn', {
         scope: 'profile email',
         width: 100,
@@ -59,6 +59,7 @@ export default class Finance extends Component {
               this.googleSignIn(googleUserInstance.getAuthResponse().id_token);
             });
       });
+      this.renderGoogleButton();
     } else {
       setTimeout(() => {
         this.gapiLoadWhenReady(script);
