@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Col, Row, Form, FormGroup, Label, Input, Button} from 'reactstrap';
 import {useHistory, Link} from 'react-router-dom';
+import Connect from '../components/IntuitConnect';
 
 const AppSettings = props => {
     let history = useHistory();
@@ -20,7 +21,7 @@ const AppSettings = props => {
         }
     };
 
-    if (Object.keys(companies).length > 1) {
+    if (companies && Object.keys(companies).length > 1) {
         switchCompanySection = (
             <Row>
                 <Col>
@@ -55,12 +56,6 @@ const AppSettings = props => {
     return (
         <Row>
             <Col>
-                <Row>
-                    <Col>
-                        To add another company, navigate to <Link to='/get-app'> Get App </Link> again.
-                    </Col>
-                </Row>
-                {switchCompanySection}
                 {!!realm_id ? (
                     <Row>
                         <Col>
@@ -71,6 +66,13 @@ const AppSettings = props => {
                         </Col>
                     </Row>
                 ) : null}
+                {switchCompanySection}
+                <Row>
+                    <Col>
+                        To add another company:
+                        <Connect />
+                    </Col>
+                </Row>
             </Col>
         </Row>
     );

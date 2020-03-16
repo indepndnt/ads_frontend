@@ -20,8 +20,8 @@ const Landing = () => {
                             <p className='lead'>Free app for QuickBooks Online</p>
                         </Col>
                     </Row>
-                    <Link to='/get-app' className='btn btn-lg rounded-pill mt-5 intuitGetApp'>
-                        Get App Now!
+                    <Link to='/app' className='btn btn-md rounded-pill mt-5 btn-primary'>
+                        Get Started!
                     </Link>
                     <ul>
                         <li>Batch upload invoices</li>
@@ -37,7 +37,7 @@ const Landing = () => {
                             <p className='lead'>Solutions for Amazon FBA sellers</p>
                         </Col>
                     </Row>
-                    <Link to='/quote' className='btn btn-lg rounded-pill mt-5 btn-primary'>
+                    <Link to='/quote' className='btn btn-md rounded-pill mt-5 btn-primary'>
                         Get Started!
                     </Link>
                     <ul>

@@ -1,43 +1,52 @@
 import React, {useState} from 'react';
-import {Container, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
+import {Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane} from 'reactstrap';
 import classnames from 'classnames';
 import Header from '../components/Header';
+import SignIn from '../components/IntuitSignIn';
 import Company from './AppCompany';
 import Results from './AppResults';
 import Settings from './AppSettings';
 import Upload from './AppUpload';
 
 const App = props => {
-    const {intuitRefreshUserInfo, loadingUserInfo, loadedUserInfo, userInfoError} = props;
+    const {intuitRefreshUserInfo, loadingUserInfo, loadedUserInfo, userInfoError, intuitLogin} = props;
     const [activeTab, setActiveTab] = useState('App');
     const tabs = ['App', 'Settings'];
+    const live = !!props.login_token;
+
+    if (!live) {
+        return (
+            <Container>
+                <Header>Invoice Logistics App</Header>
+                <Row>
+                    <Col>
+                        <p>You are not signed in. You must sign in with Intuit to access the app.</p>
+                        <SignIn onClick={intuitLogin} />
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
 
     if (!loadedUserInfo && !loadingUserInfo) {
         intuitRefreshUserInfo();
     }
-
-    const Tab = props => {
-        const {name} = props;
-        return (
-            <NavItem>
-                <NavLink
-                    className={classnames({active: activeTab === name})}
-                    tag='div'
-                    onClick={() => {
-                        if (activeTab !== name) setActiveTab(name);
-                    }}>
-                    {name}
-                </NavLink>
-            </NavItem>
-        );
-    };
 
     return (
         <Container>
             <Header>Invoice Logistics App</Header>
             <Nav tabs>
                 {tabs.map(tab => (
-                    <Tab key={tab} name={tab} />
+                    <NavItem key={tab}>
+                        <NavLink
+                            className={classnames({active: activeTab === tab})}
+                            tag='div'
+                            onClick={() => {
+                                if (activeTab !== tab) setActiveTab(tab);
+                            }}>
+                            {tab}
+                        </NavLink>
+                    </NavItem>
                 ))}
             </Nav>
             <TabContent activeTab={activeTab}>

@@ -1,6 +1,6 @@
 {
     "name": "ads_frontend",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "private": true,
     "dependencies": {
         "axios": "latest",
@@ -8,6 +8,7 @@
         "classnames": "latest",
         "react": "latest",
         "react-dom": "latest",
+        "react-hover-image": "^1.0.1",
         "react-redux": "latest",
         "react-router-dom": "latest",
         "react-scripts": "latest",

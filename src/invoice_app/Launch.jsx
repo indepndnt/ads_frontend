@@ -21,7 +21,7 @@ const Launch = props => {
                 </Container>
             ) : (
                 <Container>
-                    <Spinner color='dark' /> You must sign in with Intuit to access the app...
+                    <Spinner color='dark' /> Signing in...
                 </Container>
             )}
         </React.Fragment>

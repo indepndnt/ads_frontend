@@ -15,7 +15,7 @@ import {
 import {Link} from 'react-router-dom';
 import './NavBar.css';
 import logo from './ads_logo_web.png';
-import intuit_button from './intuit-sign-in.png';
+import SignIn from './IntuitSignIn';
 
 const NavBarComponent = props => {
     const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +52,7 @@ const NavBarComponent = props => {
                     ) : (
                         <NavItem>
                             <NavLink>
-                                <img src={intuit_button} alt='Sign in with Intuit' onClick={intuitLogin} />
+                                <SignIn onClick={intuitLogin} />
                             </NavLink>
                             <Popover placement='bottom' isOpen={!!loginError} target='loginButton'>
                                 <PopoverHeader>Login Error</PopoverHeader>

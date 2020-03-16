@@ -1,22 +1,11 @@
 div.container {
-  margin-top: 100px;
-  margin-bottom: 32px;
+    margin-top: 100px;
+    margin-bottom: 32px;
 }
 
 .rounded-pill {
-  border-radius: 5rem;
-  display: block;
-  margin: 0 auto 12px;
-  width: fit-content;
-}
-
-a.intuitGetApp {
-  background-image: url("C2QB_green_btn_lg_default.png");
-  text-indent: -9999px;
-  background-size: 275px 48px;
-  width: 275px;
-}
-
-a.intuitGetApp:hover {
-  background-image: url("C2QB_green_btn_lg_hover.png");
+    border-radius: 5rem;
+    display: block;
+    margin: 0 auto 12px;
+    width: fit-content;
 }

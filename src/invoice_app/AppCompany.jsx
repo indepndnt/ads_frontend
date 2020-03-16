@@ -1,5 +1,6 @@
 import React from 'react';
 import {Col, Row} from 'reactstrap';
+import Connect from '../components/IntuitConnect';
 
 const AppCompany = props => {
     const {company_name} = props;
@@ -8,9 +9,16 @@ const AppCompany = props => {
         <Row>
             <Col>
                 <h4>Connection</h4>
-                <p>
-                    You are connected to <strong>{company_name}</strong>.
-                </p>
+                {!company_name ? (
+                    <p>
+                        You have no active company connections.
+                        <Connect />
+                    </p>
+                ) : (
+                    <p>
+                        You are connected to <strong>{company_name}</strong>.
+                    </p>
+                )}
             </Col>
         </Row>
     );
