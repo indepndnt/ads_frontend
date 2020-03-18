@@ -1,5 +1,24 @@
 import * as act from '../actions/types';
 
+const companyData = (realm_id, payload) => {
+    const retVal = {};
+    retVal.companies = payload.reduce((acc, co) => {
+        acc[co.realm_id] = co.company_name;
+        return acc;
+    }, {});
+    if (payload.length > 0) {
+        if (!(realm_id in retVal.companies)) realm_id = payload[0].realm_id;
+        retVal.realm_id = realm_id;
+        retVal.company_name = retVal.companies[realm_id];
+    }
+    retVal.uploads = payload.reduce((acc, co) => {
+        acc[co.realm_id] = co.uploads;
+        return acc;
+    }, {});
+    console.log(retVal);
+    return retVal;
+};
+
 const user = (
     state = {
         links: [],
@@ -9,43 +28,30 @@ const user = (
     },
     action
 ) => {
-    let companyList;
     switch (action.type) {
         case act.RECEIVE_LOGIN_TOKEN:
             const {token, expires_in} = action.payload.login_token;
-            companyList = action.payload.companies;
             let expires_at = new Date();
             expires_at.setSeconds(expires_at.getSeconds() + expires_in - 30);
             state = {
                 ...state,
+                ...companyData(state.realm_id, action.payload.companies),
                 login_token: token,
                 expires_at,
             };
-            if (!state.realm_id && companyList.length > 0) {
-                state.realm_id = companyList[0].realm_id;
-                state.company_name = companyList[0].company_name;
-            }
             break;
         case act.INTUIT_LOGIN_FAILURE:
             state = {
                 ...state,
                 login_token: null,
-                expires_at: null
+                expires_at: null,
             };
             break;
         case act.REFRESH_USER_INFO_SUCCESS:
-            companyList = action.payload.companies;
-            let companies = companyList.reduce((acc, co) => {acc[co.realm_id] = co.company_name; return acc}, {});
-            let uploads = companyList.reduce((acc, co) => {acc[co.realm_id] = co.uploads; return acc}, {});
             state = {
                 ...state,
-                companies,
-                uploads,
+                ...companyData(state.realm_id, action.payload.companies),
             };
-            if (!state.realm_id && companyList.length > 0) {
-                state.realm_id = companyList[0].realm_id;
-                state.company_name = companyList[0].company_name;
-            }
             break;
         case act.UPLOAD_INVOICES_SUCCESS:
             let newUploads = {...state.uploads};
