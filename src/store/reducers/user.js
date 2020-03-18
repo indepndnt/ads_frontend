@@ -1,21 +1,27 @@
 import * as act from '../actions/types';
 
 const companyData = (realm_id, payload) => {
-    const retVal = {};
-    retVal.companies = payload.reduce((acc, co) => {
-        acc[co.realm_id] = co.company_name;
-        return acc;
-    }, {});
-    if (payload.length > 0) {
-        if (!(realm_id in retVal.companies)) realm_id = payload[0].realm_id;
-        retVal.realm_id = realm_id;
-        retVal.company_name = retVal.companies[realm_id];
+    if (!payload || payload.length < 1) {
+        return {
+            realm_id: null,
+            company_name: null,
+            companies: {},
+            uploads: {},
+        };
     }
-    retVal.uploads = payload.reduce((acc, co) => {
-        acc[co.realm_id] = co.uploads;
-        return acc;
-    }, {});
-    console.log(retVal);
+    const retVal = {
+        companies: payload.reduce((acc, co) => {
+            acc[co.realm_id] = co.company_name;
+            return acc;
+        }, {}),
+        uploads: payload.reduce((acc, co) => {
+            acc[co.realm_id] = co.uploads;
+            return acc;
+        }, {}),
+    };
+    if (!(realm_id in retVal.companies)) realm_id = payload[0].realm_id;
+    retVal.realm_id = realm_id;
+    retVal.company_name = retVal.companies[realm_id];
     return retVal;
 };
 
