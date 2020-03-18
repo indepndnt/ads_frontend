@@ -50,8 +50,8 @@ const Disconnect = props => {
                 </p>
             </Container>
         );
-    } else if (!!login_token && expires_at > now && !disconnectLoading) {
-        intuitDisconnect();
+    } else if (!!login_token && expires_at > now) {
+        if (!disconnectLoading) intuitDisconnect();
     } else if (!loginLoading) intuitLogin();
     return (
         <React.Fragment>

@@ -1,9 +1,6 @@
 import * as act from '../actions/types';
 
-const session = (
-    state = {},
-    action
-) => {
+const session = (state = {}, action) => {
     switch (action.type) {
         case act.SEND_CONTACT_REQUEST:
             state = {
