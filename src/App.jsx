@@ -11,6 +11,7 @@ import Landing from './content/Landing';
 import EULA from './content/EULA';
 import PrivacyPolicy from './content/PrivacyPolicy';
 import RequestQuote from './content/RequestQuote';
+import Jobs from './content/Jobs';
 import Contact from './content/Contact';
 
 import GetApp from './invoice_app/GetApp';
@@ -19,9 +20,9 @@ import Launch from './invoice_app/Launch';
 import Disconnect from './invoice_app/Disconnect';
 import InvoiceApp from './invoice_app/App';
 
-import Finance from './finance/Finance';
 import Admin from './admin/Admin';
 import Brainchild from './brainchild/Brainchild';
+import Finance from './finance/Finance';
 
 class App extends React.Component {
     // TODO: add a timer to renew login token if there's an expires_at
@@ -39,6 +40,7 @@ class App extends React.Component {
                 <Route path='/finance' component={Finance} />
                 <Route path='/brainchild' component={Brainchild} />
                 <Route path='/admin' component={Admin} />
+                <Route path='/jobs' component={Jobs} />
 
                 <Route path='/app' render={() => <InvoiceApp {...this.props} />} />
                 <Route path='/launch' render={() => <Launch {...this.props} />} />
