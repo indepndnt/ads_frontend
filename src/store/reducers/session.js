@@ -89,6 +89,7 @@ const session = (state = {}, action) => {
             state = {
                 ...state,
                 receivedToken: false,
+                disconnectRequested: false,
                 callbackError: null,
             };
             break;

@@ -6,20 +6,30 @@ import {Container, Spinner} from 'reactstrap';
 const Callback = props => {
     const [isLoading, setIsLoading] = useState(false);
     const query = new URLSearchParams(useLocation().search);
-    const {intuitCallback, receivedToken, callbackError} = props;
+    const {intuitCallback, receivedToken, callbackError, disconnectRequested} = props;
 
     if (!isLoading && !receivedToken) {
         setIsLoading(true);
-        let result = {};
+        let payload = {};
         for (let entry of query) {
             const [key, value] = entry;
-            result[key] = value;
+            payload[key] = value;
         }
-        intuitCallback(result);
+
+        let setup = {};
+        const state = payload.state.split(":")
+        if (state.length > 1 && state[1] === 'DISCONNECT')
+        {
+            payload.state = state[0];
+            setup.realm_id = payload.realm_id;
+            setup.disconnectRequested = true;
+        }
+        intuitCallback(payload, setup);
     }
 
     if (!!receivedToken) {
-        return <Redirect to='/app' />;
+        if (!!disconnectRequested) return <Redirect to='/disconnect' />;
+        else return <Redirect to='/app' />;
     }
 
     return (

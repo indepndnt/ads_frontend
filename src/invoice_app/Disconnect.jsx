@@ -17,10 +17,12 @@ const Disconnect = props => {
         login_token,
         expires_at,
         loginLoading,
+        companies,
+        switchCompany,
     } = props;
     let content = (
         <Container>
-            <Spinner color='dark' /> Disconnecting app ...
+            <Spinner color='dark'/> Disconnecting app ...
         </Container>
     );
 
@@ -33,13 +35,18 @@ const Disconnect = props => {
             </Container>
         );
     } else if (intuitDisconnected) {
+        if (companies && companies.length >= 1) {
+            const realm = Object.keys(companies)[0];
+            switchCompany(realm, companies[realm]);
+        }
+
         content = (
             <Container>
                 <h3>Disconnected</h3>
                 <p>You have disconnected your QuickBooks Online from the Invoice Logistics App.</p>
                 <p>
                     If this was unintentional, you can undo by reconnecting with the button below.
-                    <Connect />
+                    <Connect/>
                 </p>
                 <p>
                     <Link to='/app'>Return to app</Link> or{' '}

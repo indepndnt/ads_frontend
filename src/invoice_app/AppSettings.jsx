@@ -1,76 +1,64 @@
 import React, {useState} from 'react';
-import {Col, Row, Form, FormGroup, Label, Input, Button} from 'reactstrap';
+import {Col, Row, FormGroup, Input, Button, Table} from 'reactstrap';
 import {useHistory, Link} from 'react-router-dom';
 import Connect from '../components/IntuitConnect';
 
 const AppSettings = props => {
     let history = useHistory();
-    const {realm_id, company_name, companies, switchCompany} = props;
-    let switchCompanySection;
+    const {realm_id, companies, switchCompany} = props;
 
     const [newRealmId, setNewRealmId] = useState(realm_id);
-    const addVal = '000000';
+    const [showConnect, setShowConnect] = useState(false);
     const handleSelect = event => {
-        setNewRealmId(event.target.value);
+        const newRealm = event.target.value;
+        setNewRealmId(newRealm);
+        switchCompany(newRealm, companies[newRealm]);
     };
-    const handleSubmit = () => {
-        if (newRealmId === addVal) {
-            history.push('/get-app');
-        } else {
-            switchCompany(newRealmId, companies[newRealmId]);
-        }
-    };
-
-    if (companies && Object.keys(companies).length > 1) {
-        switchCompanySection = (
-            <Row>
-                <Col>
-                    <Form inline tag='span'>
-                        <FormGroup className='mr-sm-2'>
-                            <Label for='companySelect' className='mr-sm-2'>
-                                Switch to
-                            </Label>
-                            <Input
-                                type='select'
-                                name='select'
-                                id='companySelect'
-                                onChange={handleSelect}
-                                value={newRealmId}>
-                                {Object.entries(companies).map(([key, value]) => (
-                                    <option key={key} value={key}>
-                                        {value}
-                                    </option>
-                                ))}
-                                <option value={addVal}>Add another company not listed.</option>
-                            </Input>
-                        </FormGroup>
-                        <Button color='primary' onClick={handleSubmit}>
-                            Go
-                        </Button>
-                    </Form>
-                </Col>
-            </Row>
-        );
+    const handleDisconnect = realm => {
+        switchCompany(realm, companies[realm]);
+        history.push('/disconnect');
     }
+    const handleAddButton = () => {
+        setShowConnect(!showConnect);
+    };
 
     return (
         <Row>
             <Col>
-                {!!realm_id ? (
-                    <Row>
-                        <Col>
-                            <Link to='/disconnect'>
-                                Disconnect <strong> {company_name} </strong>
-                            </Link>
-                            from the app.
-                        </Col>
-                    </Row>
-                ) : null}
-                {switchCompanySection}
+                {companies ? (
+                    <Table hover responsive size="sm">
+                        <thead>
+                        <tr>
+                            <th>Selected</th>
+                            <th>Company</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {Object.entries(companies).map(([key, value]) => (
+                            <tr key={key}>
+                                <th scope="row">
+                                    <FormGroup check>
+                                        <Input type="radio" name="select" value={key} onChange={handleSelect}
+                                               checked={key === newRealmId}/>
+                                    </FormGroup>
+                                </th>
+                                <td>{value}</td>
+                                <td>
+                                    <Link to="/disconnect" onClick={() => handleDisconnect(key)}>Disconnect</Link>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+                ) : (<Row><Col>You have no companies connected.</Col></Row>)}
                 <Row>
                     <Col>
-                        To add another company:
-                        <Connect />
+                        <Button color='primary' onClick={handleAddButton}>
+                            Add New Company
+                        </Button>
+                        {showConnect ? <Connect/> : null}
                     </Col>
                 </Row>
             </Col>

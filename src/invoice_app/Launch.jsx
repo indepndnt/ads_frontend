@@ -10,7 +10,8 @@ const Launch = props => {
     if (!!login_token && expires_at > now) {
         return <Redirect to='/app' />;
     }
-    if (!loginLoading && !loginError) intuitLogin();
+    // The /launch call is direct from QuickBooks Online, so the login should include accounting scope
+    if (!loginLoading && !loginError) intuitLogin({get_app: true});
     return (
         <React.Fragment>
             <Header>Launch Invoice Logistics App</Header>

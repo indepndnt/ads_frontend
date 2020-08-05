@@ -1,11 +1,11 @@
 import * as act from './creators';
 import axios from 'axios';
 
-export function intuitLogin() {
+export function intuitLogin(params = {}) {
     return dispatch => {
         dispatch(act.intuitLoginRequest());
         axios
-            .get('/api/v1/start')
+            .get('/api/v1/start', {params: params})
             .then(response => dispatch(act.intuitLoginSuccess(response.data)))
             .catch(err => dispatch(act.intuitLoginFailure(err.message)));
     };
@@ -21,12 +21,12 @@ export function intuitGetApp() {
     };
 }
 
-export function intuitCallback(data) {
+export function intuitCallback(data, setup) {
     return dispatch => {
         dispatch(act.intuitCallbackRequest());
         axios
             .post('/api/v1/token', data)
-            .then(response => dispatch(act.intuitCallbackSuccess(response.data)))
+            .then(response => dispatch(act.intuitCallbackSuccess({...setup, ...response.data})))
             .catch(err => dispatch(act.intuitCallbackFailure(err.message)));
     };
 }
@@ -92,7 +92,7 @@ export function sendContact(data) {
         dispatch(act.sendContactRequest());
         axios
             .post('/api/v1/contact', data)
-            .then(response => {
+            .then(() => {
                 dispatch(act.sendContactSuccess());
             })
             .catch(err => {
