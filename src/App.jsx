@@ -19,6 +19,7 @@ import Callback from './invoice_app/IntuitCallback';
 import Launch from './invoice_app/Launch';
 import Disconnect from './invoice_app/Disconnect';
 import InvoiceApp from './invoice_app/App';
+import LabelApp from './invoice_app/LabelApp';
 
 import Admin from './admin/Admin';
 import Brainchild from './brainchild/Brainchild';
@@ -43,6 +44,7 @@ class App extends React.Component {
                 <Route path='/jobs' component={Jobs} />
 
                 <Route path='/app' render={() => <InvoiceApp {...this.props} />} />
+                <Route path='/label' render={() => <LabelApp {...this.props.label} doUpload={this.props.uploadLabels} />} />
                 <Route path='/launch' render={() => <Launch {...this.props} />} />
                 <Route path='/disconnect' render={() => <Disconnect {...this.props} />} />
                 <Route path='/intuit-callback' render={() => <Callback {...this.props} />} />
@@ -60,6 +62,7 @@ const mapStateToProps = state => {
     return {
         ...state.session,
         ...state.user,
+        label: {...state.label},
     };
 };
 

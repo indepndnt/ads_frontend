@@ -1,33 +1,34 @@
 import * as act from './creators';
 import axios from 'axios';
+import {saveAs} from 'file-saver';
 
-export function intuitLogin(params = {}) {
-    return dispatch => {
+export function intuitLogin() {
+    return (dispatch) => {
         dispatch(act.intuitLoginRequest());
         axios
-            .get('/api/v1/start', {params: params})
-            .then(response => dispatch(act.intuitLoginSuccess(response.data)))
-            .catch(err => dispatch(act.intuitLoginFailure(err.message)));
+            .get('/api/v1/start')
+            .then((response) => dispatch(act.intuitLoginSuccess(response.data)))
+            .catch((err) => dispatch(act.intuitLoginFailure(err.message)));
     };
 }
 
 export function intuitGetApp() {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(act.intuitGetAppRequest());
         axios
             .get('/api/v1/start', {params: {get_app: true}})
-            .then(response => dispatch(act.intuitGetAppSuccess(response.data)))
-            .catch(err => dispatch(act.intuitGetAppFailure(err.message)));
+            .then((response) => dispatch(act.intuitGetAppSuccess(response.data)))
+            .catch((err) => dispatch(act.intuitGetAppFailure(err.message)));
     };
 }
 
 export function intuitCallback(data, setup) {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(act.intuitCallbackRequest());
         axios
             .post('/api/v1/token', data)
-            .then(response => dispatch(act.intuitCallbackSuccess({...setup, ...response.data})))
-            .catch(err => dispatch(act.intuitCallbackFailure(err.message)));
+            .then((response) => dispatch(act.intuitCallbackSuccess({...setup, ...response.data})))
+            .catch((err) => dispatch(act.intuitCallbackFailure(err.message)));
     };
 }
 
@@ -38,7 +39,7 @@ export function intuitDisconnect() {
         axios
             .delete('/api/v1/token', {params: {realm_id}, headers: {Authorization: 'Bearer ' + login_token}})
             .then(() => dispatch(act.intuitDisconnectSuccess()))
-            .catch(err => dispatch(act.intuitDisconnectFailure(err.message)));
+            .catch((err) => dispatch(act.intuitDisconnectFailure(err.message)));
     };
 }
 
@@ -48,8 +49,8 @@ export function intuitGetCompanyInfo() {
         dispatch(act.companyInfoRequest());
         axios
             .get('/api/v1/company-info', {params: {realm_id}, headers: {Authorization: 'Bearer ' + login_token}})
-            .then(response => dispatch(act.companyInfoSuccess(response.data)))
-            .catch(err => dispatch(act.companyInfoFailure(err.message)));
+            .then((response) => dispatch(act.companyInfoSuccess(response.data)))
+            .catch((err) => dispatch(act.companyInfoFailure(err.message)));
     };
 }
 
@@ -59,8 +60,8 @@ export function intuitRefreshUserInfo() {
         dispatch(act.userInfoRequest());
         axios
             .get('/api/v1/user', {headers: {Authorization: 'Bearer ' + login_token}})
-            .then(response => dispatch(act.userInfoSuccess(response.data)))
-            .catch(err => dispatch(act.userInfoFailure(err.message)));
+            .then((response) => dispatch(act.userInfoSuccess(response.data)))
+            .catch((err) => dispatch(act.userInfoFailure(err.message)));
     };
 }
 
@@ -76,26 +77,52 @@ export function intuitUploadInvoices(file, onProgress) {
                 headers: {Authorization: 'Bearer ' + login_token},
                 onUploadProgress: onProgress,
             })
-            .then(response => {
+            .then((response) => {
                 console.log(response.statusText);
                 dispatch(act.uploadInvoicesSuccess(response.data));
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err.message);
                 dispatch(act.uploadInvoicesFailure(err.message));
             });
     };
 }
 
+export function uploadLabels(file, onProgress) {
+    return (dispatch) => {
+        dispatch(act.uploadLabelsRequest());
+        const data = new FormData();
+        data.append('file', file);
+        axios
+            .post('/api/v1/labels', data, {
+                responseType: 'blob',
+                onUploadProgress: onProgress,
+            })
+            .then((response) => {
+                const filename =
+                    response.headers['content-disposition']
+                        .split('filename=')[1]
+                        .split(';')[0]
+                        .replace(/^"(.*)"$/, '$1') + '.pdf';
+                saveAs(new Blob([response.data], {type: 'application/pdf'}), filename);
+                dispatch(act.uploadLabelsSuccess(response.data));
+            })
+            .catch((err) => {
+                console.log(err.message);
+                dispatch(act.uploadLabelsFailure(err.message));
+            });
+    };
+}
+
 export function sendContact(data) {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(act.sendContactRequest());
         axios
             .post('/api/v1/contact', data)
             .then(() => {
                 dispatch(act.sendContactSuccess());
             })
-            .catch(err => {
+            .catch((err) => {
                 dispatch(act.sendContactFailure(err.message));
             });
     };

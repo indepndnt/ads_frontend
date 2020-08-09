@@ -92,6 +92,18 @@ export function uploadInvoicesFailure(message) {
     return {type: act.UPLOAD_INVOICES_FAILURE, payload: message};
 }
 
+export function uploadLabelsRequest() {
+    return {type: act.UPLOAD_LABELS_REQUEST};
+}
+
+export function uploadLabelsSuccess(payload) {
+    return {type: act.UPLOAD_LABELS_SUCCESS, payload};
+}
+
+export function uploadLabelsFailure(message) {
+    return {type: act.UPLOAD_LABELS_FAILURE, payload: message};
+}
+
 export function sendContactRequest() {
     return {type: act.SEND_CONTACT_REQUEST};
 }
