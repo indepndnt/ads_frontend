@@ -8,7 +8,7 @@ import Results from './AppResults';
 import Settings from './AppSettings';
 import Upload from './AppUpload';
 
-const App = props => {
+const App = (props) => {
     const {intuitRefreshUserInfo, loadingUserInfo, loadedUserInfo, userInfoError, intuitLogin} = props;
     const [activeTab, setActiveTab] = useState('App');
     const tabs = ['App', 'Settings'];
@@ -21,7 +21,7 @@ const App = props => {
                 <Row>
                     <Col>
                         <p>You are not signed in. You must sign in with Intuit to access the app.</p>
-                        <SignIn onClick={intuitLogin} />
+                        <SignIn onClick={() => intuitLogin('launch')} />
                     </Col>
                 </Row>
             </Container>
@@ -36,7 +36,7 @@ const App = props => {
         <Container>
             <Header>Invoice Logistics App</Header>
             <Nav tabs>
-                {tabs.map(tab => (
+                {tabs.map((tab) => (
                     <NavItem key={tab}>
                         <NavLink
                             className={classnames({active: activeTab === tab})}

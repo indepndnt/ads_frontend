@@ -17,7 +17,7 @@ import './NavBar.css';
 import logo from './ads_logo_web.png';
 import SignIn from './IntuitSignIn';
 
-const NavBarComponent = props => {
+const NavBarComponent = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const {links, intuitLogin, intuitLogout, loginLoading, loginError, login_token} = props;
@@ -31,7 +31,7 @@ const NavBarComponent = props => {
             <Collapse isOpen={isOpen} navbar>
                 {links ? (
                     <Nav>
-                        {links.map(link => (
+                        {links.map((link) => (
                             <NavItem key={link.id}>
                                 <NavLink tag={Link} to={link.link}>
                                     {link.text}
@@ -52,7 +52,7 @@ const NavBarComponent = props => {
                     ) : (
                         <NavItem>
                             <NavLink>
-                                <SignIn onClick={intuitLogin} />
+                                <SignIn onClick={() => intuitLogin('login')} />
                             </NavLink>
                             <Popover placement='bottom' isOpen={!!loginError} target='loginButton'>
                                 <PopoverHeader>Login Error</PopoverHeader>

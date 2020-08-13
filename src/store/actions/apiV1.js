@@ -2,11 +2,11 @@ import * as act from './creators';
 import axios from 'axios';
 import {saveAs} from 'file-saver';
 
-export function intuitLogin() {
+export function intuitLogin(pathway) {
     return (dispatch) => {
         dispatch(act.intuitLoginRequest());
         axios
-            .get('/api/v1/start')
+            .get('/api/v1/start/' + pathway)
             .then((response) => dispatch(act.intuitLoginSuccess(response.data)))
             .catch((err) => dispatch(act.intuitLoginFailure(err.message)));
     };
@@ -16,7 +16,7 @@ export function intuitGetApp() {
     return (dispatch) => {
         dispatch(act.intuitGetAppRequest());
         axios
-            .get('/api/v1/start', {params: {get_app: true}})
+            .get('/api/v1/start/get_app')
             .then((response) => dispatch(act.intuitGetAppSuccess(response.data)))
             .catch((err) => dispatch(act.intuitGetAppFailure(err.message)));
     };

@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom';
 import Header from '../components/Header';
 import {Container, Spinner} from 'reactstrap';
 
-const Launch = props => {
+const Launch = (props) => {
     const now = new Date();
 
     const {login_token, expires_at, intuitLogin, loginLoading, loginError} = props;
@@ -11,7 +11,7 @@ const Launch = props => {
         return <Redirect to='/app' />;
     }
     // The /launch call is direct from QuickBooks Online, so the login should include accounting scope
-    if (!loginLoading && !loginError) intuitLogin({get_app: true});
+    if (!loginLoading && !loginError) intuitLogin('launch');
     return (
         <React.Fragment>
             <Header>Launch Invoice Logistics App</Header>

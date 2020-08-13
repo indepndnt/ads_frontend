@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Connect from '../components/IntuitConnect';
 import {Container, Spinner} from 'reactstrap';
 
-const Disconnect = props => {
+const Disconnect = (props) => {
     const now = new Date();
     const {
         intuitDisconnect,
@@ -22,7 +22,7 @@ const Disconnect = props => {
     } = props;
     let content = (
         <Container>
-            <Spinner color='dark'/> Disconnecting app ...
+            <Spinner color='dark' /> Disconnecting app ...
         </Container>
     );
 
@@ -46,7 +46,7 @@ const Disconnect = props => {
                 <p>You have disconnected your QuickBooks Online from the Invoice Logistics App.</p>
                 <p>
                     If this was unintentional, you can undo by reconnecting with the button below.
-                    <Connect/>
+                    <Connect />
                 </p>
                 <p>
                     <Link to='/app'>Return to app</Link> or{' '}
@@ -59,7 +59,7 @@ const Disconnect = props => {
         );
     } else if (!!login_token && expires_at > now) {
         if (!disconnectLoading) intuitDisconnect();
-    } else if (!loginLoading) intuitLogin();
+    } else if (!loginLoading) intuitLogin('disconnect');
     return (
         <React.Fragment>
             <Header>Disconnect Invoice Logistics App</Header>
