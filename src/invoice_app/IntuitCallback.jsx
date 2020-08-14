@@ -3,7 +3,7 @@ import {useLocation, Redirect} from 'react-router-dom';
 import Header from '../components/Header';
 import {Container, Spinner} from 'reactstrap';
 
-const Callback = props => {
+const Callback = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const query = new URLSearchParams(useLocation().search);
     const {intuitCallback, receivedToken, callbackError, disconnectRequested} = props;
@@ -17,10 +17,8 @@ const Callback = props => {
         }
 
         let setup = {};
-        const state = payload.state.split(":")
-        if (state.length > 1 && state[1] === 'DISCONNECT')
-        {
-            payload.state = state[0];
+        const state = payload.state.split(':');
+        if (state.length > 1 && state[1] === 'DISCONNECT') {
             setup.realm_id = payload.realm_id;
             setup.disconnectRequested = true;
         }
