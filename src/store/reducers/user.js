@@ -25,15 +25,14 @@ const companyData = (realm_id, payload) => {
     return retVal;
 };
 
-const user = (
-    state = {
-        links: [],
-        login_token: null,
-        expires_at: null,
-        realm_id: null,
-    },
-    action
-) => {
+const defaultState = {
+    links: [],
+    login_token: null,
+    expires_at: null,
+    realm_id: null,
+};
+
+const user = (state = defaultState, action) => {
     switch (action.type) {
         case act.RECEIVE_LOGIN_TOKEN:
             const {token, expires_in} = action.payload.login_token;
@@ -52,6 +51,9 @@ const user = (
                 login_token: null,
                 expires_at: null,
             };
+            break;
+        case act.INTUIT_LOGOUT_REQUEST:
+            state = defaultState;
             break;
         case act.REFRESH_USER_INFO_SUCCESS:
             state = {

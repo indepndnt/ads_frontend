@@ -12,6 +12,16 @@ export function intuitLogin(pathway) {
     };
 }
 
+export function intuitLogout() {
+    return (dispatch, getState) => {
+        const {login_token} = getState().user;
+        dispatch(act.intuitLogoutRequest());
+        axios
+            .delete('/api/v1/user', {headers: {Authorization: 'Bearer ' + login_token}})
+            .catch((err) => dispatch(act.intuitLoginFailure(err.message)));
+    };
+}
+
 export function intuitGetApp() {
     return (dispatch) => {
         dispatch(act.intuitGetAppRequest());
@@ -61,7 +71,10 @@ export function intuitRefreshUserInfo() {
         axios
             .get('/api/v1/user', {headers: {Authorization: 'Bearer ' + login_token}})
             .then((response) => dispatch(act.userInfoSuccess(response.data)))
-            .catch((err) => dispatch(act.userInfoFailure(err.message)));
+            .catch((err) => {
+                if (err.response) dispatch(act.intuitLoginFailure(err.response.data.detail));
+                else dispatch(act.userInfoFailure(err.message));
+            });
     };
 }
 

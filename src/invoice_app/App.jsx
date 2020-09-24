@@ -12,9 +12,8 @@ const App = (props) => {
     const {intuitRefreshUserInfo, loadingUserInfo, loadedUserInfo, userInfoError, intuitLogin} = props;
     const [activeTab, setActiveTab] = useState('App');
     const tabs = ['App', 'Settings'];
-    const live = !!props.login_token;
 
-    if (!live) {
+    if (!props.login_token || userInfoError === 'You are not logged in.') {
         return (
             <Container>
                 <Header>Invoice Logistics App</Header>

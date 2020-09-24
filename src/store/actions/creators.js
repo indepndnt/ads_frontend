@@ -52,8 +52,8 @@ export function intuitDisconnectFailure(message) {
     return {type: act.INTUIT_DISCONNECT_FAILURE, payload: message};
 }
 
-export function intuitLogout() {
-    return {type: act.INTUIT_LOGOUT};
+export function intuitLogoutRequest() {
+    return {type: act.INTUIT_LOGOUT_REQUEST};
 }
 
 export function companyInfoRequest() {

@@ -106,7 +106,7 @@ const session = (state = {}, action) => {
                 callbackError: action.payload,
             };
             break;
-        case act.INTUIT_LOGOUT:
+        case act.INTUIT_LOGOUT_REQUEST:
             state = {};
             break;
         case act.GET_COMPANY_INFO_REQUEST:
